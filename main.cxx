@@ -8,14 +8,14 @@
 
 
 int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
-    uint32_t  bnumpositions,                     //
+    uint32_t  bnumpositions,                     //  data from babylon
     double    bpositions[],                      //
     uint32_t  bnumindices,                       // 
     uint32_t  bindices[],                        //
-    uint32_t* nhpos,                             //
-    double    hpos[],                            //
-    uint64_t* ntet,                              //
-    uint32_t  tets[])                            //
+    uint32_t* noVerticesOut,                     //  data to babylon
+    double    verticesOut[],                     //
+    uint64_t* noTetrahedraOut,                   //
+    uint32_t  tetetrahedraOut[])                 //
 {
 
     printf("startBabylon2Tetgen!\n");
@@ -76,19 +76,19 @@ int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
 
 
     // push back to BABYLON usable polyhedra data
-
-    *hpos = out.numberofpoints;
-    memcpy(hpos, out.pointlist, sizeof(REAL) * out.numberofpoints * 3);
+	
+    *noVerticesOut = out.numberofpoints;
+    memcpy(noVerticesOut, out.pointlist, sizeof(REAL) * out.numberofpoints * 3);
 
     uint64_t i;
-    *ntet = out.numberoftetrahedra;
+    *noTetrahedraOut = out.numberoftetrahedra;
 
     for (i = 0; i < out.numberoftetrahedra; i++)
     {
-        tets[i * 4] = out.tetrahedronlist[i * 4];
-        tets[i * 4 + 1] = out.tetrahedronlist[i * 4 + 1];
-        tets[i * 4 + 2] = out.tetrahedronlist[i * 4 + 2];
-        tets[i * 4 + 3] = out.tetrahedronlist[i * 4 + 3];
+        tetrahedraOut[i * 4] = out.tetrahedronlist[i * 4];
+        tetrahedraOut[i * 4 + 1] = out.tetrahedronlist[i * 4 + 1];
+        tetrahedraOut[i * 4 + 2] = out.tetrahedronlist[i * 4 + 2];
+        tetrahedraOut[i * 4 + 3] = out.tetrahedronlist[i * 4 + 3];
     }
 
     return 0;
