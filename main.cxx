@@ -6,8 +6,7 @@
 #include "tetgen/tetgen.h"
 #include <emscripten.h>
 
-
-int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
+extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
     uint32_t  bnumpositions,                     //  data from babylon
     double    bpositions[],                      //
     uint32_t  bnumindices,                       // 
@@ -97,5 +96,6 @@ int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
 
 
 int main() {
+  printf("main!\n");
   return 0;
 }
