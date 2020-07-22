@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <cstdint>
 #include <math.h>
+#include <iostream>
 
 #include "tetgen/tetgen.h"
 #include <emscripten.h>
