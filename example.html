@@ -65,11 +65,15 @@
 	  console.log(sphere);
 	  console.log(Module);
 	  
-	  
-	  var pos = sphere.geometry._vertexBuffers.position._buffer._data;
-	  var pos_size = sphere.geometry._totalVertices;
-	  var indices = sphere.geometry._indices;
-	  var indices_size = sphere.geometry._indices.length;
+	  sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
+	  const wm = sphere.computeWorldMatrix(true);
+      sphereVertexData.transform(wm);
+	 
+	 
+	  var pos = sphereVertexData.positions;
+	  var pos_size = pos.length;
+	  var indices = sphereVertexData.indices;
+	  var indices_size = indices.length;
 	  
 	  
 	  console.log(pos);
