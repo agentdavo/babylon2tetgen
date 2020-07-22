@@ -127,7 +127,7 @@
 
         // Add and manipulate meshes in the scene
         var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 10, segments: 6}, scene);
-		sphere.forceSharedVertices();
+		// sphere.forceSharedVertices();
 		var alphamat = new BABYLON.StandardMaterial('alphamat', scene);
 		alphamat.diffuseColor = BABYLON.Color3.Blue();
 		alphamat.emissiveColor = new BABYLON.Color3(1.0, .1, .1);
