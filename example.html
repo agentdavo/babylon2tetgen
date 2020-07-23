@@ -24,6 +24,7 @@
         <script src="https://preview.babylonjs.com/babylon.js"></script>
         <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
         <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+	<script src="example.js"></script>
     </head>
 
    <body>
@@ -31,120 +32,42 @@
     <canvas id="renderCanvas" touch-action="none"></canvas> <!-- touch-action="none" for best results from PEP -->
       
     <script>
-      var Module = {
-	  print: (function() { return function(text) { console.log(text); } })()
-      };
     </script>
     
     <script>
-      var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-      var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+        var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+        var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-      /******* Add the create scene function ******/
+        /******* Add the create scene function ******/
 
-      var g_emscripten_alive = false;
-	  
-      function check_em() { return function() { g_emscripten_alive=true; } }
-	  
-      var check_emscripten = function() {
-	  if (Module) {
-	      Module['onRuntimeInitialized'] = check_em();
-	  } else {
-	      window.setTimeout(function() { check_emscripten(); }, 100);
-	  }
-      }
-      var call_it = function(sphere) {
-	  if (!g_emscripten_alive) {
-	      window.setTimeout(function() { call_it(sphere); },100);
-	      return;
-	  }
-	  
-	  
-	  
-	  
-	  console.log(sphere);
-	  console.log(Module);
-	  
-	  sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
-	  const wm = sphere.computeWorldMatrix(true);
-      sphereVertexData.transform(wm);
-	 
-	 
-	  var pos = sphereVertexData.positions;
-	  var pos_size = pos.length;
-	  var indices = sphereVertexData.indices;
-	  var indices_size = indices.length;
-	  
-	  
-	  console.log(pos);
-	  console.log(pos_size);
-	  console.log(indices);
-	  console.log(indices_size);
-	  
-	  
-	  var data = new Float64Array(pos);
-	  var nDataBytes = data.length * data.BYTES_PER_ELEMENT;
-	  var dataPtr = Module._malloc(nDataBytes);
-	  var pos_alloc = new Uint8Array(Module.HEAPU8.buffer, dataPtr, nDataBytes);
-	  pos_alloc.set(new Uint8Array(data.buffer));
-
-	  
-	  console.log(data);
-	  console.log(pos_alloc);
-	  
-	  
-	  var idata = new Int32Array(indices);
-	  var inDataBytes = idata.length * idata.BYTES_PER_ELEMENT;
-	  var idataPtr = Module._malloc(inDataBytes);
-	  var indices_alloc = new Uint8Array(Module.HEAPU8.buffer, idataPtr, inDataBytes);
-	  indices_alloc.set(new Uint8Array(idata.buffer));
-
-	  var nhposptr = Module._malloc(8);
-      var nhpos_alloc = new Uint8Array(Module.HEAPU8.buffer, nhposptr, 8);
-
-	  var hposptr = Module._malloc(data.length*data.BYTES_PER_ELEMENT*10);
-	  var hpos_alloc = new Uint8Array(Module.HEAPU8.buffer, hposptr, data.length*data.BYTES_PER_ELEMENT*10);
-	  
-	  var ntetptr = Module._malloc(8);
-      var ntet_alloc = new Uint8Array(Module.HEAPU8.buffer, nhposptr, 8);
-
-	  var tetsptr = Module._malloc(idata.length*idata.BYTES_PER_ELEMENT*10);
-	  var tets_alloc = new Uint8Array(Module.HEAPU8.buffer, hposptr, idata.length*idata.BYTES_PER_ELEMENT*10);
-
-	  Module.ccall('babylon2tetgen', null, ['number','number', 'number', 'number', 'number', 'number', 'number', 'number'],
-	                                       [pos_size, pos_alloc.byteOffset, indices_size, indices_alloc.byteOffset, nhpos_alloc.byteOffset, hpos_alloc.byteOffset, ntet_alloc.byteOffset, tets_alloc.byteOffset]); 
-	  
-      };
 
       var createScene = function () {
 
-        // Create the scene space
-        var scene = new BABYLON.Scene(engine);
+            // Create the scene space
+            var scene = new BABYLON.Scene(engine);
 
-        // Add a camera to the scene and attach it to the canvas
-        var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,15), scene);
-        camera.attachControl(canvas, true);
+            // Add a camera to the scene and attach it to the canvas
+            var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
+            camera.attachControl(canvas, true);
 
-        // Add lights to the scene
-        var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
-        var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+            // Add lights to the scene
+            var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+            var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
-        // Add and manipulate meshes in the scene
-        var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 10, segments: 6}, scene);
-		// sphere.forceSharedVertices();
-		var alphamat = new BABYLON.StandardMaterial('alphamat', scene);
-		alphamat.diffuseColor = BABYLON.Color3.Blue();
-		alphamat.emissiveColor = new BABYLON.Color3(1.0, .1, .1);
-		alphamat.alpha = 0.10;
-		sphere.material = alphamat;
-		sphere.enableEdgesRendering();
-		sphere.edgesWidth = 2.0;
-		sphere.edgesColor = new BABYLON.Color4(1, 0, 0, 1);
-		
-	    check_emscripten();
-		
-	    window.setTimeout(function() { call_it(sphere); },100);
-            return scene;
+            // Add and manipulate meshes in the scene
+          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:10, segments:32}, scene);
+	  check_emscripten();
+	  //window.setTimeout(function() { call_it(sphere); },100);
+	  processmesh(sphere).then(function(value) {
+	      console.log("THEN");
+	      console.log(value);
+	      value.applyToMesh(sphere); // THIS OVERWRITES SPHERE'S VERTEXARRAYS
+	  },function(value) {
+	      console.log("FAIL");
+	      console.log(value);
+	  });
+
+          return scene;
         };
         /******* End of the create scene function ******/
 
@@ -160,8 +83,7 @@
                 engine.resize();
         });
     </script>
-	
-    <script src="babylon2tet.js"></script>
+	<script src="babylon2tet.js"></script>
 
    </body>
 
