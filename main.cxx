@@ -38,8 +38,8 @@ extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
     // b.fixedvolume = 1;
     // b.maxvolume = 1.0;
     b.verbose = 2;
-    b.nomergefacet = 1;
-    b.nomergevertex = 1;
+    //b.nomergefacet = 1;
+    //b.nomergevertex = 1;
     //b.diagnose = 1;
     b.mindihedral=20;
     b.minratio=1.5;
@@ -47,14 +47,17 @@ extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
 #if 1
     b.plc = 1;
     b.quality = 1;
-    b.refine = 1;
+    b.refine = 0; // CORRECT=1
     b.coarsen = 0;
     b.minratio = 1.414;
-    b.mindihedral = 165.0;
-    //b.mindihedral = 15.0;
+    //b.mindihedral = 165.0;
+    b.mindihedral = 15.0;
     b.epsilon = 1.0e-8;
 #endif
-    
+    b.nojettison = 1;
+    b.nobisect = 1;
+    b.convex=1;
+    //b.metric = 1;
     // All indices start from 0
     in.firstnumber = 1;
     in.mesh_dim = 3;
@@ -123,17 +126,36 @@ extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
     // push back to BABYLON usable polyhedra data
 	
     *noVerticesOut = out.numberofpoints;
-    memcpy(noVerticesOut, out.pointlist, sizeof(REAL) * out.numberofpoints * 3);
-
+    
+    //memcpy(verticesOut, out.pointlist, sizeof(REAL) * out.numberofpoints * 3);
     uint64_t i;
-    *noTetrahedraOut = out.numberoftetrahedra;
+    //std::cout << "NUMPOINTS:" << out.numberofpoints << std::endl;
+    for(i=0;i<out.numberofpoints;i++) {
+      verticesOut[i] = out.pointlist[i];
+      //std::cout << "V:" << verticesOut[i] << std::endl;
+    }
 
+#ifdef QUADSTOTRIS
+    *noTetrahedraOut = out.numberoftetrahedra*6/4;
+#else
+    *noTetrahedraOut = out.numberoftetrahedra;
+#endif
+    
     for (i = 0; i < out.numberoftetrahedra; i++)
     {
-        tetrahedraOut[i * 4] = out.tetrahedronlist[i * 4];
+#ifdef QUADSTOTRIS
+      tetrahedraOut[i * 6] = out.tetrahedronlist[i * 4];
+        tetrahedraOut[i * 6 + 1] = out.tetrahedronlist[i * 4 + 1];
+        tetrahedraOut[i * 6 + 2] = out.tetrahedronlist[i * 4 + 2];
+        tetrahedraOut[i * 6 + 3] = out.tetrahedronlist[i * 4];
+        tetrahedraOut[i * 6 + 4] = out.tetrahedronlist[i * 4 + 2];
+        tetrahedraOut[i * 6 + 5] = out.tetrahedronlist[i * 4 + 3];
+#else
+	      tetrahedraOut[i * 4] = out.tetrahedronlist[i * 4];
         tetrahedraOut[i * 4 + 1] = out.tetrahedronlist[i * 4 + 1];
         tetrahedraOut[i * 4 + 2] = out.tetrahedronlist[i * 4 + 2];
         tetrahedraOut[i * 4 + 3] = out.tetrahedronlist[i * 4 + 3];
+#endif
     }
 
     return 0;

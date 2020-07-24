@@ -24,6 +24,7 @@
         <script src="https://preview.babylonjs.com/babylon.js"></script>
         <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
         <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+	<script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
 	<script src="example.js"></script>
     </head>
 
@@ -55,13 +56,29 @@
             var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
             // Add and manipulate meshes in the scene
-          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:10, segments:32}, scene);
+          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:100, segments:32}, scene);
+	  var tetrahedron = new BABYLON.Mesh("tetra", scene);
+	  var alphamat = new BABYLON.StandardMaterial('alphamat', scene);
+	  alphamat.diffuseColor = BABYLON.Color3.Blue();
+	  alphamat.emissiveColor = new BABYLON.Color3(1.0,.1,.1);
+	  alphamat.alpha = 0.05;
+	  sphere.material = alphamat;
+	  sphere.enableEdgesRendering();
+	  sphere.edgesWidth = 2.0;
+	  sphere.edgesColor = new BABYLON.Color4(1,0,0,1);
+
+	  tetrahedron.material = alphamat;
+	  tetrahedron.enableEdgesRendering();
+	  tetrahedron.edgesWidth = 2.0;
+	  tetrahedron.edgesColor = new BABYLON.Color4(1,0,0,1);
+
+	  //var sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere2", {diameter:2, segments:32}, scene);
 	  check_emscripten();
 	  //window.setTimeout(function() { call_it(sphere); },100);
 	  processmesh(sphere).then(function(value) {
 	      console.log("THEN");
 	      console.log(value);
-	      value.applyToMesh(sphere); // THIS OVERWRITES SPHERE'S VERTEXARRAYS
+	      value.applyToMesh(tetrahedron); // THIS OVERWRITES SPHERE'S VERTEXARRAYS
 	  },function(value) {
 	      console.log("FAIL");
 	      console.log(value);
