@@ -23,15 +23,14 @@ libtetgen.o: $(TETGEN)/tetgen.cxx
 
 babylon2tet: predicates.o libtetgen.o main.cxx
 	$(CXX) $(CXXFLAGS) -I $(TETGEN) $(BUILD)/predicates.o $(BUILD)/libtetgen.o main.cxx -o babylon2tet.js \
-	-s ENVIRONMENT=web \
-	-s WASM=1 \
-	-s ALLOW_MEMORY_GROWTH=1 \
-	--memory-init-file 0 \
+    -s ENVIRONMENT=web \
+    -s WASM=1 \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    --memory-init-file 0 \
     -s FORCE_FILESYSTEM=1 \
-	-s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall','cwrap', 'babylon2tetgen']" \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall','cwrap','babylon2tetgen']" \
     -s ASSERTIONS=2 \
     -s SAFE_HEAP=0 -s ALIASING_FUNCTION_POINTERS=0 \
     -s DISABLE_EXCEPTION_CATCHING=2 \
     -s MAXIMUM_MEMORY=2GB \
-    -s ALLOW_MEMORY_GROWTH=1 \
-    -s TOTAL_MEMORY=33554432
+    -s ALLOW_MEMORY_GROWTH=1

@@ -3,63 +3,77 @@
 #include <cstdint>
 #include <math.h>
 #include <iostream>
+#include <fstream>
 
 #include "tetgen/tetgen.h"
 #include <emscripten.h>
 
-extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
+EMSCRIPTEN_KEEPALIVE
+extern "C" int babylon2tetgen(
     uint32_t  bnumpositions,                     //  data from babylon
     double    bpositions[],                      //
     uint32_t  bnumindices,                       // 
     uint32_t  bindices[],                        //
-    uint32_t* noVerticesOut,                     //  data to babylon
+    uint32_t* numVerticesOut,                    //  data to babylon
     double    verticesOut[],                     //
-    uint64_t* noTetrahedraOut,                   //
-    uint32_t  tetrahedraOut[])                 //
+    uint64_t* numTetrahedraOut,                  //
+    uint32_t  tetrahedraOut[])                   //
 {
 
+    // debug inputs to make sure transfer
+    // of data from BabylonJS is OK
     printf("startBabylon2Tetgen!\n");
-
-    //printf("numpos=%d\n",bnumpositions);
-    //int s = bnumpositions;
-    //for(int i=0;i<s;i++)
-    //  std::cout << "Pos:" << bpositions[i] << std::endl;
-    //int s2 = bnumindices;
-    //for(int i=0;i<s2;i++)
-    //  std::cout << "Idx:" << bindices[i] << std::endl;
+    printf("numpos=%d\n",bnumpositions);
+    printf("numind=%d\n",bnumindices);
+    // check input counts
+    // for(int i=0;i<10;i++) std::cout << std::setprecision (17) << "Pos:" << bpositions[i] << std::endl;
+    // for(int i=0;i<10;i++) std::cout << std::setprecision (17) << "Indices:" << bindices[i] << std::endl;
     
     tetgenio in, out;
 
-    // set tetgen options
+    // tetgen options begin
+
     tetgenbehavior b;
-    b.plc = 1;
-    b.quality = 1;
-    // b.minratio = 1.2;
-    // b.fixedvolume = 1;
-    // b.maxvolume = 1.0;
-    b.verbose = 2;
-    //b.nomergefacet = 1;
-    //b.nomergevertex = 1;
-    //b.diagnose = 1;
-    b.mindihedral=20;
-    b.minratio=1.5;
-    
-#if 1
-    b.plc = 1;
-    b.quality = 1;
-    b.refine = 0; // CORRECT=1
-    b.coarsen = 0;
+
+    b.object = tetgenbehavior::POLY;
+    b.zeroindex = 1;
+    b.docheck = 1;
+    b.verbose = 1;
+    b.quiet = 1;
+    b.diagnose = 0;
+
+    b.mindihedral = 20;
     b.minratio = 1.414;
-    //b.mindihedral = 165.0;
-    b.mindihedral = 15.0;
-    b.epsilon = 1.0e-8;
-#endif
-    b.nojettison = 1;
+    b.plc = 1;
+    b.quality = 1;
+    b.epsilon = 1.e-10;
+
+    //b.facesout = 1;
+    //b.edgesout = 1;
+    //b.neighout = 1;
+
+    // Preserves the input surface mesh
     b.nobisect = 1;
-    b.convex=1;
-    //b.metric = 1;
-    // All indices start from 0
-    in.firstnumber = 1;
+    b.nobisect_nomerge = 1;
+
+    // Disable removal of duplicate vertices and faces
+    b.nomergefacet = 1;
+    b.nomergevertex = 1;
+    b.nojettison = 1;
+
+    // Maximum tetrahedron volume constraint. Assumes uniform mesh density on the surface
+    // b.fixedvolume = 1;
+
+    // creates linear tetrahedrals
+    b.order = 1;
+
+
+
+    // tetgen options end
+
+
+
+    in.firstnumber = 0;
     in.mesh_dim = 3;
 
     // initialize in with BABYLON counts
@@ -67,53 +81,34 @@ extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
     in.pointlist = new REAL[bnumpositions * 3];
     in.numberoffacets = bnumindices/3;
     in.facetlist = new tetgenio::facet[in.numberoffacets];
+    in.facetmarkerlist = new int[in.numberoffacets];
 
     // copy BABYLON pointlist to in
     memcpy(in.pointlist, bpositions, sizeof(REAL) * bnumpositions);
 
+
     uint64_t numfacets = in.numberoffacets;
-    for(int i=0;i<numfacets;i++) {
-      tetgenio::facet* f;
-      tetgenio::polygon *p;
-      f= &in.facetlist[i];
+    for(int i = 0; i < numfacets; i++) {
+      tetgenio::facet* f = &in.facetlist[i];
+      f->holelist = (REAL*)NULL;
+      f->numberofholes = 0;
       f->numberofpolygons = 1;
       f->polygonlist = new tetgenio::polygon[f->numberofpolygons];
-      f->numberofholes = 0;
-      f->holelist = (REAL*)NULL;
-
-      p = &f->polygonlist[0];
+      tetgenio::polygon *p = &f->polygonlist[0];
       p->numberofvertices = 3;
-      p->vertexlist = new int[3];
+      p->vertexlist = new int[p->numberofvertices];
       p->vertexlist[0] = (int)bindices[i*3+0];
       p->vertexlist[1] = (int)bindices[i*3+1];
       p->vertexlist[2] = (int)bindices[i*3+2];
+      in.facetmarkerlist[i] = 0;
     }
+
+    // printf("Writing to files...\n");
+    // char out_name[] = "debug_in_";
+    // in.save_nodes(out_name);
+    // in.save_poly(out_name);
+    // in.save_elements(out_name);
     
-#if 0
-    uint64_t numfacets = in.numberoffacets;
-
-    // use BABYLON vertice data to populate in_tegenio
-    for (int i = 0; i < numfacets; i++)
-    {
-        tetgenio::facet* f;
-        tetgenio::polygon* p;
-
-        f = &in.facetlist[i];
-        f->numberofpolygons = 1;
-        f->polygonlist = new tetgenio::polygon[f->numberofpolygons];
-        f->numberofholes = 0;
-        f->holelist = (REAL*)NULL;
-
-        p = &f->polygonlist[0];
-        p->numberofvertices = 3;
-        p->vertexlist = new int[3];
-        p->vertexlist[0] = (int)(&in.facetlist[i * 3]);
-        p->vertexlist[1] = (int)(&in.facetlist[i * 3 + 1]);
-        p->vertexlist[2] = (int)(&in.facetlist[i * 3 + 2]);
-    }
-#endif
-    
-
     ///////////////////////////////////////////////////////////////////
 
     printf("tetrahedralizeStart!\n");
@@ -125,37 +120,24 @@ extern "C" int EMSCRIPTEN_KEEPALIVE babylon2tetgen(
 
     // push back to BABYLON usable polyhedra data
 	
-    *noVerticesOut = out.numberofpoints;
-    
-    //memcpy(verticesOut, out.pointlist, sizeof(REAL) * out.numberofpoints * 3);
-    uint64_t i;
-    //std::cout << "NUMPOINTS:" << out.numberofpoints << std::endl;
-    for(i=0;i<out.numberofpoints;i++) {
-      verticesOut[i] = out.pointlist[i];
-      //std::cout << "V:" << verticesOut[i] << std::endl;
+    *numVerticesOut = out.numberofpoints;
+    *numTetrahedraOut = out.numberoftetrahedra;
+    printf("numPosOut=%d\n",out.numberofpoints);
+    printf("numTetOut=%d\n",out.numberoftetrahedra);
+
+    for(int i=0; i<out.numberofpoints; i++){
+        int vert_index = 3*i;
+  	verticesOut[vert_index] = out.pointlist[vert_index];
+        verticesOut[vert_index+1] = out.pointlist[vert_index+1];
+        verticesOut[vert_index+2] = out.pointlist[vert_index+2];
     }
 
-#ifdef QUADSTOTRIS
-    *noTetrahedraOut = out.numberoftetrahedra*6/4;
-#else
-    *noTetrahedraOut = out.numberoftetrahedra;
-#endif
-    
-    for (i = 0; i < out.numberoftetrahedra; i++)
-    {
-#ifdef QUADSTOTRIS
-      tetrahedraOut[i * 6] = out.tetrahedronlist[i * 4];
-        tetrahedraOut[i * 6 + 1] = out.tetrahedronlist[i * 4 + 1];
-        tetrahedraOut[i * 6 + 2] = out.tetrahedronlist[i * 4 + 2];
-        tetrahedraOut[i * 6 + 3] = out.tetrahedronlist[i * 4];
-        tetrahedraOut[i * 6 + 4] = out.tetrahedronlist[i * 4 + 2];
-        tetrahedraOut[i * 6 + 5] = out.tetrahedronlist[i * 4 + 3];
-#else
-	      tetrahedraOut[i * 4] = out.tetrahedronlist[i * 4];
-        tetrahedraOut[i * 4 + 1] = out.tetrahedronlist[i * 4 + 1];
-        tetrahedraOut[i * 4 + 2] = out.tetrahedronlist[i * 4 + 2];
-        tetrahedraOut[i * 4 + 3] = out.tetrahedronlist[i * 4 + 3];
-#endif
+    for(int i=0; i<out.numberoftetrahedra; i++){
+        int tet_index = 4*i;
+  	tetrahedraOut[tet_index] = out.tetrahedronlist[tet_index];
+  	tetrahedraOut[tet_index+1] = out.tetrahedronlist[tet_index+1];
+  	tetrahedraOut[tet_index+2] = out.tetrahedronlist[tet_index+2];  	  	
+  	tetrahedraOut[tet_index+3] = out.tetrahedronlist[tet_index+3]; 
     }
 
     return 0;
