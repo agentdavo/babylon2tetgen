@@ -38,9 +38,9 @@
 	  indData_alloc.set(new Uint8Array(indData.buffer));
 
 	  var posDataOutCount = Module._malloc(4);
-          var indDataOutCount = Module._malloc(4);
+      var indDataOutCount = Module._malloc(4);
 	  var posDataOut = Module._malloc(posData.length * 8 * 2);
-	  var indDataOut = Module._malloc(posData.length * 4 * 2);
+	  var indDataOut = Module._malloc(posData.length * 4 * 20);
 	  
 	  Module.ccall('babylon2tetgen',
                         null,
@@ -55,14 +55,14 @@
           var newIndCount = getValue(indDataOutCount, 'i32');
 
           // check output counts match tetgen
-	  console.log("newPosCount:");    
+	      console.log("newPosCount:");    
           console.log(newPosCount);
-	  console.log("newIndCount:");    
+	      console.log("newIndCount:");    
           console.log(newIndCount);
 
 
 	      
-	  // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
+	      // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
           // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
           // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
 

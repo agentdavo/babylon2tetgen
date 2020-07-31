@@ -107,20 +107,13 @@ extern "C" int babylon2tetgen(
 
 	
 
-    for(int i=0; i < out.numberofpoints; i++){
-        int vert_index = 3*i;
-  	verticesOut[vert_index]   = out.pointlist[vert_index];
-        verticesOut[vert_index+1] = out.pointlist[vert_index+1];
-        verticesOut[vert_index+2] = out.pointlist[vert_index+2];
+    for(int i=0; i < 3*out.numberofpoints; i++){
+  	    verticesOut[i]   = out.pointlist[i];
     }
     *numVerticesOut = out.numberofpoints;
 
-    for(int i=0; i < out.numberoftetrahedra; i++){
-        int tet_index = 4*i;
-  	tetrahedraOut[tet_index]   = out.tetrahedronlist[tet_index];
-  	tetrahedraOut[tet_index+1] = out.tetrahedronlist[tet_index+1];
-  	tetrahedraOut[tet_index+2] = out.tetrahedronlist[tet_index+2];  	  	
-  	tetrahedraOut[tet_index+3] = out.tetrahedronlist[tet_index+3]; 
+    for(int i=0; i < 4*out.numberoftetrahedra; i++){
+  	    tetrahedraOut[i] = out.tetrahedronlist[i];
     }
     *numTetrahedraOut = out.numberoftetrahedra;
 
