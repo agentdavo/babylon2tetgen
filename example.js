@@ -113,35 +113,35 @@
           console.log(indices);
 		  
 		  
-		  
+          var tetrahedron = BABYLON.MeshBuilder.CreatePolyhedron("tet", {type: 0, size: 3}, scene);
 
-
 		  
-          for ( var i = 0; i < 10 ; i++ ) {
+          for ( var i = 0; i < 3 ; i++ ) {
 			  
 			var posArray = positions[i];
 			var indArray = indices[i];
-			
+			var normals = [];
+			BABYLON.VertexData.ComputeNormals(posArray, indArray, normals);
+		
 			console.log(posArray);
 			console.log(indArray);
+			console.log(normals);
 			  
 			var tetraVertexData = new BABYLON.VertexData();
-			
 			tetraVertexData.positions = posArray;
 			tetraVertexData.indices = indArray;
+			tetraVertexData.normals = normals;
 			
-			console.log(tetraVertexData);			
+			console.log(tetraVertexData);
+
+            var name = "tet_" + i;			
 						
-			var tetraMesh = new BABYLON.Mesh("tet_" + i, scene);
+			var tetraMesh = new BABYLON.Mesh(name, scene);
 			
 			tetraVertexData.applyToMesh(tetraMesh);
-			
-			tetraMesh.convertToFlatShadedMesh();
-			
-			tetraMesh.enableEdgesRendering();    
-            tetraMesh.edgesWidth = 4.0;
-            tetraMesh.edgesColor = new BABYLON.Color4(0, 0, 1, 1);
+            console.log("tetraMesh " + name " rendered!");
 
+			tetraMesh.enableEdgesRendering(); 
           }
                
      
