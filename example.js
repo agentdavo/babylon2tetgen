@@ -113,10 +113,8 @@
           console.log(indices);
 
 
-          var numOfTets = 10;   // TODO
-
 		  
-          for ( var i = 0; i < numOfTets ; i++ ) {
+          for ( var i = 0; i < indices.length ; i++ ) {
 			  
 			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
 
