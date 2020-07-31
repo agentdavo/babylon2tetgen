@@ -116,19 +116,17 @@
 		  
           for ( var i = 0; i < indices.length ; i++ ) {
 			  
-			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
-
-			var normals = [];
-			BABYLON.VertexData.ComputeNormals(positions[i], indices[i], normals);
+			var tetraVertexData = BABYLON.VertexData();
 			
 			tetraVertexData.positions = positions[i];
 			tetraVertexData.indices = indices[i];
-			tetraVertexData.normals = normals;
 			
 			console.log(tetraVertexData);			
 						
 			var tetraMesh = new BABYLON.Mesh("tet_" + i, scene);
+			
 			tetraVertexData.applyToMesh(tetraMesh);
+			
 			tetraMesh.enableEdgesRendering();    
             tetraMesh.edgesWidth = 4.0;
             tetraMesh.edgesColor = new BABYLON.Color4(0, 0, 1, 1);
