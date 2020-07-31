@@ -24,7 +24,6 @@
       const wm = mesh.computeWorldMatrix(true);
 
       var sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
-      var sphereVertexData.transform(wm);
 
 	  var pos = sphereVertexData.positions;
 	  var ind = sphereVertexData.getIndices();
