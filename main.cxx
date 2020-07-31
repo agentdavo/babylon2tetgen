@@ -102,7 +102,6 @@ extern "C" int babylon2tetgen(
 
     printf("tetrahedralizeStart!\n");
     tetrahedralize(&b, &in, &out);
-    printf("tetrahedralizeEnd!\n");
 
     ////////////////////////////////////////////////////////////////////
 
@@ -130,6 +129,12 @@ extern "C" int babylon2tetgen(
     printf("numTetOut=%d\n",out.numberoftetrahedra);
 
 
+    printf("Additional Debug!\n");
+    printf("%d  %d  %d  %d\n", out.numberofpoints, out.mesh_dim, out.numberofpointattributes, out.pointmarkerlist != NULL ? 1 : 0);
+    printf("%d  %d  %d\n", out.numberoftetrahedra, out.numberofcorners, out.numberoftetrahedronattributes);
+
+
+    printf("tetrahedralizeEnd!\n");
 
     return 0;
 
