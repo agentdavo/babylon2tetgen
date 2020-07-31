@@ -31,50 +31,40 @@ extern "C" int babylon2tetgen(
     
     tetgenio in, out;
 
+
+    //////////////////////////////
     // tetgen options begin
-
+    /////////////////////////////
     tetgenbehavior b;
-
     b.object = tetgenbehavior::POLY;
     b.zeroindex = 1;
     b.docheck = 1;
     b.verbose = 1;
     b.quiet = 1;
     b.diagnose = 0;
-
     b.mindihedral = 20;
     b.minratio = 1.414;
     b.plc = 1;
     b.quality = 1;
     b.epsilon = 1.e-10;
-
     //b.facesout = 1;
     //b.edgesout = 1;
     //b.neighout = 1;
-
     // Preserves the input surface mesh
     b.nobisect = 1;
     b.nobisect_nomerge = 1;
-
     // Disable removal of duplicate vertices and faces
     b.nomergefacet = 1;
     b.nomergevertex = 1;
     b.nojettison = 1;
-
     // Maximum tetrahedron volume constraint. Assumes uniform mesh density on the surface
     // b.fixedvolume = 1;
-
     // creates linear tetrahedrals
     b.order = 1;
-
-
-
+    ////////////////////////////
     // tetgen options end
+    ////////////////////////////
 
-
-
-    in.firstnumber = 0;
-    in.mesh_dim = 3;
 
     // initialize in with BABYLON counts
     in.numberofpoints = bnumpositions;
@@ -85,7 +75,6 @@ extern "C" int babylon2tetgen(
 
     // copy BABYLON pointlist to in
     memcpy(in.pointlist, bpositions, sizeof(REAL) * bnumpositions);
-
 
     uint64_t numfacets = in.numberoffacets;
     for(int i = 0; i < numfacets; i++) {
@@ -117,28 +106,30 @@ extern "C" int babylon2tetgen(
 
     ////////////////////////////////////////////////////////////////////
 
-
-    // push back to BABYLON usable polyhedra data
 	
-    *numVerticesOut = out.numberofpoints;
-    *numTetrahedraOut = out.numberoftetrahedra;
-    printf("numPosOut=%d\n",out.numberofpoints);
-    printf("numTetOut=%d\n",out.numberoftetrahedra);
 
-    for(int i=0; i<out.numberofpoints; i++){
+    for(int i=0; i < out.numberofpoints; i++){
         int vert_index = 3*i;
-  	verticesOut[vert_index] = out.pointlist[vert_index];
+  	verticesOut[vert_index]   = out.pointlist[vert_index];
         verticesOut[vert_index+1] = out.pointlist[vert_index+1];
         verticesOut[vert_index+2] = out.pointlist[vert_index+2];
     }
+    *numVerticesOut = out.numberofpoints;
+    printf("numPosOut=%d\n",out.numberofpoints);
 
-    for(int i=0; i<out.numberoftetrahedra; i++){
+
+
+    for(int i=0; i < out.numberoftetrahedra; i++){
         int tet_index = 4*i;
-  	tetrahedraOut[tet_index] = out.tetrahedronlist[tet_index];
+  	tetrahedraOut[tet_index]   = out.tetrahedronlist[tet_index];
   	tetrahedraOut[tet_index+1] = out.tetrahedronlist[tet_index+1];
   	tetrahedraOut[tet_index+2] = out.tetrahedronlist[tet_index+2];  	  	
   	tetrahedraOut[tet_index+3] = out.tetrahedronlist[tet_index+3]; 
     }
+    *numTetrahedraOut = out.numberoftetrahedra;
+    printf("numTetOut=%d\n",out.numberoftetrahedra);
+
+
 
     return 0;
 
