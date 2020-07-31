@@ -86,29 +86,29 @@
 			  var tetraPosX = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // X
 			  var tetraPosY = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Y
 			  var tetraPosZ = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Z
-              tmp.push(tetraPosX,tetraPosY,tetraPosZ);
-			  tetraPositions.push(tmp);
+              temp.push(tetraPosX,tetraPosY,tetraPosZ);
+			  tetraPositions.push(temp);
 			  
 			  var temp = [];
 			  tetraPosX = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // X
 			  tetraPosY = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Y
 			  tetraPosZ = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Z
-              tmp.push(tetraPosX,tetraPosY,tetraPosZ);
-			  tetraPositions.push(tmp);
+              temp.push(tetraPosX,tetraPosY,tetraPosZ);
+			  tetraPositions.push(temp);
 			  
 			  var temp = [];
 			  tetraPosX = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // X
 			  tetraPosY = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Y
 			  tetraPosZ = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Z
-              tmp.push(tetraPosX,tetraPosY,tetraPosZ);
-			  tetraPositions.push(tmp);
+              temp.push(tetraPosX,tetraPosY,tetraPosZ);
+			  tetraPositions.push(temp);
 			  
 			  var temp = [];
 			  tetraPosX = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // X
 			  tetraPosY = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Y
 			  tetraPosZ = Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]; v++;  // Z
-              tmp.push(tetraPosX,tetraPosY,tetraPosZ);
-			  tetraPositions.push(tmp);
+              temp.push(tetraPosX,tetraPosY,tetraPosZ);
+			  tetraPositions.push(temp);
 			  
 			  vertexPoints.push(tetraPositions);
 			  
