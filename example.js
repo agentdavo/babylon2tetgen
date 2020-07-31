@@ -72,8 +72,8 @@
          // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
          ////////////////////////////////////////////////////////////////////////////////////
 		 
-		  var tetVertexDataPos = new Float64Array();
-		  var tetVertexDataInd = new Uint32Array();
+		  var tetVertexDataPos = [];
+		  var tetVertexDataInd = [];
 	      
           console.log("populating vertex points array");
 	      
@@ -115,9 +115,9 @@
 		  
 		  
 
-          for ( var i = 0; i < 20 ; i++ ) {
+          for ( var i = 0; i < 5 ; i++ ) {
 			  	  
-			var posArray = tetVrtexDataPos[i];
+			var posArray = tetVertexDataPos[i];
 			var indArray = tetVertexDataInd[i];
 			  
 		    var tetraVertexData = new BABYLON.VertexData();
