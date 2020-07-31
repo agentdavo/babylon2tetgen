@@ -70,11 +70,13 @@
 	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
          // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
          // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
-         /////////////////////////////////////////////////////////////////////////////////////	 
+         ////////////////////////////////////////////////////////////////////////////////////
+		 
+		  var tetVertexDataPos = new Float64Array();
+		  var tetVertexDataInd = new Uint32Array();
 	      
           console.log("populating vertex points array");
 	      
-          var positions = [];
           for (let v = 0; v < newPosCount * 3 ;) {
 			  var temp = [];
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
@@ -89,7 +91,7 @@
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  positions.push(temp);
+			  tetVertexDataPos.positions.push(temp);
           }
           console.log(positions);
 
@@ -97,7 +99,6 @@
 
           console.log("populating face indices array");
 	      
-          var indices = [];
           for (let f = 0; f < newIndCount * 4 ;) {
               var temp = [];
 	          var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
@@ -108,7 +109,7 @@
               temp.push(tetraInd1, tetraInd3, tetraInd2);
               temp.push(tetraInd0, tetraInd2, tetraInd3);
               temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  indices.push(temp);
+			  tetVertexDataInd.indices.push(temp);
           }
           console.log(indices);
 		  
@@ -116,8 +117,8 @@
 
           for ( var i = 0; i < 20 ; i++ ) {
 			  	  
-			var posArray = positions[i];
-			var indArray = indices[i];
+			var posArray = vertexDataPos.positions[i];
+			var indArray = vertexDataInd.indices[i];
 			  
 		    var tetraVertexData = new BABYLON.VertexData();
 			tetraVertexData.positions = posArray;
