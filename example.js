@@ -91,7 +91,7 @@
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  tetVertexDataPos.positions.push(temp);
+			  tetVertexDataPos.push(temp);
           }
           console.log(positions);
 
@@ -109,7 +109,7 @@
               temp.push(tetraInd1, tetraInd3, tetraInd2);
               temp.push(tetraInd0, tetraInd2, tetraInd3);
               temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  tetVertexDataInd.indices.push(temp);
+			  tetVertexDataInd.push(temp);
           }
           console.log(indices);
 		  
