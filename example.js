@@ -93,7 +93,7 @@
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  tetVertexDataPos.push(temp);
           }
-          console.log(positions);
+          console.log(tetVertexDataPos);
 
          ////////////////////////////////////////////////////////////////////
 
@@ -111,14 +111,14 @@
               temp.push(tetraInd0, tetraInd3, tetraInd1);
 			  tetVertexDataInd.push(temp);
           }
-          console.log(indices);
+          console.log(tetVertexDataInd);
 		  
 		  
 
           for ( var i = 0; i < 20 ; i++ ) {
 			  	  
-			var posArray = vertexDataPos.positions[i];
-			var indArray = vertexDataInd.indices[i];
+			var posArray = tetVrtexDataPos[i];
+			var indArray = tetVertexDataInd[i];
 			  
 		    var tetraVertexData = new BABYLON.VertexData();
 			tetraVertexData.positions = posArray;
