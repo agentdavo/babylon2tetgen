@@ -55,24 +55,33 @@
           var newIndCount = getValue(indDataOutCount, 'i32');
 
           // check output counts match tetgen
-          // console.log(newPosCount);
-          // console.log(newIndCount);
+	  console.log("newPosCount:");    
+          console.log(newPosCount);
+	  console.log("newIndCount:");    
+          console.log(newIndCount);
 
 
-          // "vertexPoints":[[0,0,1.7],[1.6,0,-0.5],[-0.8,1.4,-0.5],[-0.8,-1.4,-0.5]],
-          // "facePoints":[[0,1,2],[0,2,3],[0,3,1],[1,3,2]]},
+	      
+	  // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
+          // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
+          // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
 
 
+	      
+         ////////////////////////////////////////////////////////////////////	 
+	      
           console.log("populating vertex points array");
+	      
           var vertexPoints = [];
           for (let v = 0; v < newPosCount * 4 ;) {
               vertexPoints.push( Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v] ); v++;
           }
           console.log(vertexPoints);
 
-
+         ////////////////////////////////////////////////////////////////////
 
           console.log("populating face indices array");
+	      
           var faceIndices = [];
           for (let f = 0; f < newIndCount ;) {
 
@@ -103,6 +112,8 @@
 
           }
           console.log(faceIndices);
+
+	 ////////////////////////////////////////////////////////////////////
 
           var numOfTets = 10;   // TODO
 
