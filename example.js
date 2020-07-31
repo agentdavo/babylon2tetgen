@@ -147,34 +147,20 @@
           }
           console.log(faceIndices);
 
-		  
-		  
-		  
-	     ////////////////////////////////////////////////////////////////////////////////////
-	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
-	     // "vertex": [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
-         // "face":   [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
-         /////////////////////////////////////////////////////////////////////////////////////	 
 
           var numOfTets = 10;   // TODO
 
+		  
           for ( var i = 0; i < numOfTets ; i++ ) {
+			 
+			var tetra: { vertex: number[][], face: number[][] } [] = [];
 
-            var v = [];
-			v = vertexPoints[i];
-            var f = [];
-			f = faceIndices[i];
+			tetra.vertex = vertexPoints[i];
+			tetra.face = faceIndices[i];
 
-            console.log(v);
-            console.log(f);
+            console.log(tetra);
 
-            var tetrahedron = { "name":"Tetrahedron",
-                                "category":["Platonic Solid"],
-                                "vertex": v,
-                                "face": f
-                               }; 
-
-            var tetMesh = BABYLON.MeshBuilder.CreatePolyhedron("tet_" +i, {custom: tetrahedron}, scene);
+            var tetMesh = BABYLON.MeshBuilder.CreatePolyhedron("tet_" + i, {custom: tetra}, scene);
 
           }
                
