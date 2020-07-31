@@ -130,7 +130,8 @@
 			tetraVertexData.positions = positions[i];
 			tetraVertexData.indices = indices[i];
 			tetraVertexData.normals = normals;
-			
+			console.log(tetraVertexData);			
+						
 			var tetraMesh = new BABYLON.Mesh("tet" + i, scene);
 			tetraVertexData.applyToMesh(tetraMesh);
 
