@@ -109,11 +109,7 @@
 	        //tetraMesh.enableEdgesRendering();
 		    //tetraMesh.edgesWidth = 5.0;
 	        //tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
-			
-          }
-               
-     
-	 
+
 	  g_call_it_count=50;
       };
 
