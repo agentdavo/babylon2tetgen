@@ -24,7 +24,7 @@
       var sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
 
 	  var pos = sphereVertexData.positions;
-	  var ind = sphereVertexData.getIndices();
+	  var ind = sphereVertexData.indices;
 
 	  var posData = new Float64Array(pos);
 	  var indData = new Int32Array(ind);
