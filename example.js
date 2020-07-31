@@ -121,7 +121,7 @@
 			var normals = [];
 			BABYLON.VertexData.ComputeNormals(posArray, indArray, normals);
 				  
-		    var tetraVertexData = new BABYLON.VertexData.();
+		    var tetraVertexData = new BABYLON.VertexData();
 			tetraVertexData.positions = posArray;
 			tetraVertexData.indices = indArray;
 			tetraVertexData.normals = normals;
