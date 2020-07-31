@@ -114,9 +114,6 @@ extern "C" int babylon2tetgen(
         verticesOut[vert_index+2] = out.pointlist[vert_index+2];
     }
     *numVerticesOut = out.numberofpoints;
-    printf("numPosOut=%d\n",out.numberofpoints);
-
-
 
     for(int i=0; i < out.numberoftetrahedra; i++){
         int tet_index = 4*i;
@@ -126,13 +123,13 @@ extern "C" int babylon2tetgen(
   	tetrahedraOut[tet_index+3] = out.tetrahedronlist[tet_index+3]; 
     }
     *numTetrahedraOut = out.numberoftetrahedra;
-    printf("numTetOut=%d\n",out.numberoftetrahedra);
 
-
-    printf("Additional Debug!\n");
-    printf("%d  %d  %d  %d\n", out.numberofpoints, out.mesh_dim, out.numberofpointattributes, out.pointmarkerlist != NULL ? 1 : 0);
-    printf("%d  %d  %d\n", out.numberoftetrahedra, out.numberofcorners, out.numberoftetrahedronattributes);
-
+    printf("Debug Outputs\n");
+    printf("pts:%d dim:%d ptatrib:%d ptsml:%d\n", out.numberofpoints, out.mesh_dim, out.numberofpointattributes, out.pointmarkerlist != NULL ? 1 : 0);
+    printf("tets:%d  corners:%d  tetatrib:%d\n", out.numberoftetrahedra, out.numberofcorners, out.numberoftetrahedronattributes);
+    printf("edges:%d  edgesml:%d\n", out.numberofedges, out.edgemarkerlist != NULL ? 1 : 0);
+    printf("first pts: %.16g  %.16g  %.16g", out.pointlist[0], out.pointlist[1], out.pointlist[2]);
+    printf("first tet: %.16g  %.16g  %.16g", out.pointlist[0], out.pointlist[1], out.pointlist[2]);
 
     printf("tetrahedralizeEnd!\n");
 
