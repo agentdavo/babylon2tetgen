@@ -20,11 +20,8 @@
 	      window.setTimeout(function() { call_it(sphere,resolve,reject); },100);
 	      return;
 	  }
-	  
-      const wm = sphere.computeWorldMatrix(true);
 
       var sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
-      var sphereVertexData.transform(wm);
 
 	  var pos = sphereVertexData.positions;
 	  var ind = sphereVertexData.getIndices();
