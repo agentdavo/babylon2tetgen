@@ -78,20 +78,7 @@
           console.log("populating vertex points array");
 	      
           for (let v = 0; v < newPosCount * 3 ;) {
-			  var temp = [];
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  tetVertexDataPos.push(temp);
+			  tetVertexDataPos.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
           }
           console.log(tetVertexDataPos);
 
@@ -100,39 +87,28 @@
           console.log("populating face indices array");
 	      
           for (let f = 0; f < newIndCount * 4 ;) {
-              var temp = [];
 	          var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
               var tetraInd1 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
               var tetraInd2 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
               var tetraInd3 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              temp.push(tetraInd0, tetraInd1, tetraInd2);
-              temp.push(tetraInd1, tetraInd3, tetraInd2);
-              temp.push(tetraInd0, tetraInd2, tetraInd3);
-              temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  tetVertexDataInd.push(temp);
+              tetVertexDataInd.push(tetraInd0, tetraInd1, tetraInd2);
+              tetVertexDataInd.push(tetraInd1, tetraInd3, tetraInd2);
+              tetVertexDataInd.push(tetraInd0, tetraInd2, tetraInd3);
+              tetVertexDataInd.push(tetraInd0, tetraInd3, tetraInd1);
           }
           console.log(tetVertexDataInd);
-		  
-		  
-
-          for ( var i = 0; i < 10 ; i++ ) {
-			  	  
-			var name = "tet_" + i;
+		  	  	    
 			tetraVertexData = new BABYLON.VertexData();
-			tetraVertexData.positions = tetVertexDataPos[i];
-			tetraVertexData.indices = tetVertexDataInd[i];
-			console.log(tetraVertexData);
+			tetraVertexData.positions = tetVertexDataPos;
+			tetraVertexData.indices = tetVertexDataInd;
 			
-		    var tetraMesh = new BABYLON.MeshBuilder.CreatePolyhedron(name, {type:0,size:1,flat:true,updatable:true}, scene );
+		    var tetraMesh = new BABYLON.Mesh("tet", scene );
 			tetraVertexData.applyToMesh(tetraMesh);
-			tetraMesh.convertToFlatShadedMesh();
 			
 			//tetraMesh.material = sphere.material;
 	        //tetraMesh.enableEdgesRendering();
 		    //tetraMesh.edgesWidth = 5.0;
 	        //tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
-			
-			console.log("tetraMesh " + name + " rendered!");
 			
           }
                
