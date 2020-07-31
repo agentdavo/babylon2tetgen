@@ -126,9 +126,10 @@
 			console.log(tetraVertexData);
 
             var name = "tet_" + i;			
-			var tetMesh = BABYLON.Mesh(name, scene);		
+			var tetMesh = new BABYLON.Mesh(name, scene);		
 			tetraVertexData.applyToMesh(tetraMesh);
 			console.log("tetraMesh " + name + " rendered!");
+			
           }
                
      
