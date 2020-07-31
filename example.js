@@ -91,7 +91,7 @@
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  positions.push(temp);
           }
-          console.log(vertexPoints);
+          console.log(positions);
 
          ////////////////////////////////////////////////////////////////////
 
@@ -134,7 +134,7 @@
               temp.push(tetraInd0, tetraInd3, tetraInd1);
 			  indices.push(temp);
           }
-          console.log(faceIndices);
+          console.log(indices);
 
 
           var numOfTets = 10;   // TODO
@@ -146,15 +146,12 @@
 			  
 			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
             console.log(tetraVertexData);
-			
-			var pos = positions[i];
-			var ind = indices[i];
+	
 			var normals = [];
+			BABYLON.VertexData.ComputeNormals(positions[i], indices[i], normals);
 			
-			BABYLON.VertexData.ComputeNormals(pos, ind, normals);
-			
-			tetraVertexData.positions = pos;
-			tetraVertexData.indices = ind;
+			tetraVertexData.positions = positions[i];
+			tetraVertexData.indices = indices[i];
 			tetraVertexData.normals = normals;
 			tetraVertexData.applyToMesh(tetraMesh, options.updatable);
 
