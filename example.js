@@ -74,7 +74,7 @@
 	      
           console.log("populating vertex points array");
 	      
-          var vertexPoints = [];
+          var positions = [];
           for (let v = 0; v < newPosCount * 3 ;) {
 			  var temp = [];
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
@@ -89,7 +89,7 @@
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
 			  temp.push(Module.HEAPF64[posDataOut / Float64Array.BYTES_PER_ELEMENT + v]); v++;
-			  vertexPoints.push(temp);
+			  positions.push(temp);
           }
           console.log(vertexPoints);
 
@@ -97,7 +97,7 @@
 
           console.log("populating face indices array");
 	      
-          var faceIndices = [];
+          var indices = [];
           for (let f = 0; f < newIndCount * 4 ;) {
               var temp = [];
 	          var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
@@ -132,7 +132,7 @@
               temp.push(tetraInd1, tetraInd3, tetraInd2);
               temp.push(tetraInd0, tetraInd2, tetraInd3);
               temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  faceIndices.push(temp);
+			  indices.push(temp);
           }
           console.log(faceIndices);
 
@@ -146,8 +146,8 @@
 			
             console.log(tetraVertexData);
 			
-			tetraVertexData.vertex = vertexPoints[i];
-			tetraVertexData.face = faceIndices[i];
+			tetraVertexData.positions = positions[i];
+			tetraVertexData.indices = faceIndices[i];
 		
             console.log(tetraVertexData);
 
