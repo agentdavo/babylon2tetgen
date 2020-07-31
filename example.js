@@ -66,14 +66,11 @@
           console.log(newIndCount);
 
 
-	      
-	      // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
-          // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
-          // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
-
-
-	      
-         ////////////////////////////////////////////////////////////////////	 
+	     ////////////////////////////////////////////////////////////////////////////////////
+	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
+         // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
+         // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
+         /////////////////////////////////////////////////////////////////////////////////////	 
 	      
           console.log("populating vertex points array");
 	      
@@ -150,22 +147,31 @@
           }
           console.log(faceIndices);
 
-	 ////////////////////////////////////////////////////////////////////
+		  
+		  
+		  
+	     ////////////////////////////////////////////////////////////////////////////////////
+	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
+	     // "vertex": [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
+         // "face":   [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
+         /////////////////////////////////////////////////////////////////////////////////////	 
 
           var numOfTets = 10;   // TODO
 
           for ( var i = 0; i < numOfTets ; i++ ) {
 
-            var v = vertexPoints[i];
-            var f = faceIndices[i];
+            var v = [];
+			v = vertexPoints[i];
+            var f = [];
+			f = faceIndices[i];
 
             console.log(v);
             console.log(f);
 
             var tetrahedron = { "name":"Tetrahedron",
                                 "category":["Platonic Solid"],
-                                "vertex": [v],
-                                "face": [f]
+                                "vertex": v,
+                                "face": f
                                }; 
 
             var tetMesh = BABYLON.MeshBuilder.CreatePolyhedron("tet_" +i, {custom: tetrahedron}, scene);
