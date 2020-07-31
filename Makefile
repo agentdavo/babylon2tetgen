@@ -24,7 +24,7 @@ libtetgen.o: $(TETGEN)/tetgen.cxx
 babylon2tet: predicates.o libtetgen.o main.cxx
 	$(CXX) $(CXXFLAGS) -I $(TETGEN) $(BUILD)/predicates.o $(BUILD)/libtetgen.o main.cxx -o babylon2tet.js \
     -s ENVIRONMENT=web \
-    -s WASM=1 \
+    -s WASM=0 \
     -s ALLOW_MEMORY_GROWTH=1 \
     --memory-init-file 0 \
     -s FORCE_FILESYSTEM=1 \
