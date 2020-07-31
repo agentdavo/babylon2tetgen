@@ -126,9 +126,13 @@
 			console.log(tetraVertexData);
 
             var name = "tet_" + i;			
-			var tetMesh = new BABYLON.Mesh(name, scene);		
+			var tetraMesh = new BABYLON.Mesh(name, scene);		
 			tetraVertexData.applyToMesh(tetraMesh);
 			console.log("tetraMesh " + name + " rendered!");
+			
+			tetraMesh.material = sphere.material;
+	        tetraMesh.enableEdgesRendering();
+	        tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
 			
           }
                
