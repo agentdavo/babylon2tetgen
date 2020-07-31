@@ -117,19 +117,14 @@
 
           for ( var i = 0; i < 10 ; i++ ) {
 			  	  
-			var posArray = tetVertexDataPos[i];
-			var indArray = tetVertexDataInd[i];
-			  
-		    var tetraVertexData = new BABYLON.VertexData();
-			tetraVertexData.positions = posArray;
-			tetraVertexData.indices = indArray;
-			
+			var name = "tet_" + i;
+			tetraVertexData = new BABYLON.VertexData();
+			tetraVertexData.positions = tetVertexDataPos[i];
+			tetraVertexData.indices = tetVertexDataInd[i];
 			console.log(tetraVertexData);
-
-            var name = "tet_" + i;			
-			var tetraMesh = new BABYLON.Mesh(name, scene);		
+			
+		    var tetraMesh = new BABYLON.MeshBuilder.CreatePolyhedron(name, {type:0,size:1,flat:true,updatable:true}, scene );
 			tetraVertexData.applyToMesh(tetraMesh);
-					
 			tetraMesh.convertToFlatShadedMesh();
 			
 			//tetraMesh.material = sphere.material;
