@@ -114,7 +114,7 @@
 		  
 		  
 
-          for ( var i = 0; i < 3 ; i++ ) {
+          for ( var i = 0; i < 100 ; i++ ) {
 			  	  
 			var posArray = positions[i];
 			var indArray = indices[i];
@@ -128,11 +128,13 @@
             var name = "tet_" + i;			
 			var tetraMesh = new BABYLON.Mesh(name, scene);		
 			tetraVertexData.applyToMesh(tetraMesh);
-			console.log("tetraMesh " + name + " rendered!");
-			
+					
 			tetraMesh.material = sphere.material;
 	        tetraMesh.enableEdgesRendering();
+		    tetraMesh.edgesWidth = 5.0;
 	        tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
+			
+			console.log("tetraMesh " + name + " rendered!");
 			
           }
                
