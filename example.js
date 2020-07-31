@@ -21,10 +21,13 @@
 	      return;
 	  }
 	  
-          
+      const wm = mesh.computeWorldMatrix(true);
 
-	  var pos = sphere.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-	  var ind = sphere.getIndices();
+      var sphereVertexData = BABYLON.VertexData.ExtractFromMesh(sphere, true, true);
+      var sphereVertexData.transform(wm);
+
+	  var pos = sphereVertexData.positions;
+	  var ind = sphereVertexData.getIndices();
 
 	  var posData = new Float64Array(pos);
 	  var indData = new Int32Array(ind);
