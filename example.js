@@ -108,30 +108,6 @@
               temp.push(tetraInd1, tetraInd3, tetraInd2);
               temp.push(tetraInd0, tetraInd2, tetraInd3);
               temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd1 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd2 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd3 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              temp.push(tetraInd0, tetraInd1, tetraInd2);
-              temp.push(tetraInd1, tetraInd3, tetraInd2);
-              temp.push(tetraInd0, tetraInd2, tetraInd3);
-              temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd1 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd2 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd3 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              temp.push(tetraInd0, tetraInd1, tetraInd2);
-              temp.push(tetraInd1, tetraInd3, tetraInd2);
-              temp.push(tetraInd0, tetraInd2, tetraInd3);
-              temp.push(tetraInd0, tetraInd3, tetraInd1);
-			  var tetraInd0 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd1 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd2 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              var tetraInd3 = Module.HEAP32[indDataOut / Uint32Array.BYTES_PER_ELEMENT + f]; f++;
-              temp.push(tetraInd0, tetraInd1, tetraInd2);
-              temp.push(tetraInd1, tetraInd3, tetraInd2);
-              temp.push(tetraInd0, tetraInd2, tetraInd3);
-              temp.push(tetraInd0, tetraInd3, tetraInd1);
 			  indices.push(temp);
           }
           console.log(indices);
@@ -142,12 +118,8 @@
 		  
           for ( var i = 0; i < numOfTets ; i++ ) {
 			  
-			var tetraMesh = new BABYLON.Mesh("tet_" + i, {updatable:true}, scene);
-			  
 			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
 			console.log(tetraVertexData);
-			
-			
             console.log(positions[i]);
 			console.log(indices[i]);
 
@@ -155,10 +127,11 @@
 			BABYLON.VertexData.ComputeNormals(positions[i], indices[i], normals);
 			console.log(normals);
 			
-			
 			tetraVertexData.positions = positions[i];
 			tetraVertexData.indices = indices[i];
 			tetraVertexData.normals = normals;
+			
+			var tetraMesh = new BABYLON.Mesh("tet" + i, scene);
 			tetraVertexData.applyToMesh(tetraMesh);
 
           }
