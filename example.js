@@ -153,18 +153,16 @@
 		  
           for ( var i = 0; i < numOfTets ; i++ ) {
 			 
-			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
+			var tetraVertexData = new BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
 			
             console.log(tetraVertexData);
 			
 			tetraVertexData.vertex = vertexPoints[i];
 			tetraVertexData.face = faceIndices[i];
-			
-			console.log(tetraVertexData);
-
+		
             console.log(tetraVertexData);
 
-            var tetraMesh = new Mesh("tet_" + i, scene);
+            var tetraMesh = new BABYLON.Mesh("tet_" + i, scene);
 			tetraVertexData.applyToMesh(tetraMesh, options.updatable);
 
           }
