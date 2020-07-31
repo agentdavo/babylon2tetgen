@@ -40,7 +40,7 @@
 	  var posDataOutCount = Module._malloc(4);
           var indDataOutCount = Module._malloc(4);
 	  var posDataOut = Module._malloc(posData.length * 8 * 2);
-	  var indDataOut = Module._malloc(posData.length * 4 * 20);
+	  var indDataOut = Module._malloc(posData.length * 4 * 2);
 	  
 	  Module.ccall('babylon2tetgen',
                         null,
