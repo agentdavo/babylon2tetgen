@@ -120,6 +120,7 @@ extern "C" int babylon2tetgen(
     printf("Debug Outputs\n");
     printf("pts:%d dim:%d ptatrib:%d ptsml:%d\n", out.numberofpoints, out.mesh_dim, out.numberofpointattributes, out.pointmarkerlist != NULL ? 1 : 0);
     printf("tets:%d  corners:%d  tetatrib:%d\n", out.numberoftetrahedra, out.numberofcorners, out.numberoftetrahedronattributes);
+	printf("tris:%d trisml:%d\n", out.numberoftrifaces, out.trifacemarkerlist != NULL ? 1 : 0);
     printf("edges:%d  edgesml:%d\n", out.numberofedges, out.edgemarkerlist != NULL ? 1 : 0);
     printf("first pts: %.16g  %.16g  %.16g\n", out.pointlist[0], out.pointlist[1], out.pointlist[2]);
     printf("first tet: todo \n");
