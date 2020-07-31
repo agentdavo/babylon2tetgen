@@ -105,10 +105,10 @@
 		    var tetraMesh = new BABYLON.Mesh("tet", scene );
 			tetraVertexData.applyToMesh(tetraMesh);
 			
-			//tetraMesh.material = sphere.material;
-	        //tetraMesh.enableEdgesRendering();
-		    //tetraMesh.edgesWidth = 5.0;
-	        //tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
+			tetraMesh.material = sphere.material;
+	        tetraMesh.enableEdgesRendering();
+		    tetraMesh.edgesWidth = 1.0;
+	        tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
 
 	  g_call_it_count=50;
       };
