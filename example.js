@@ -119,21 +119,21 @@
           for ( var i = 0; i < numOfTets ; i++ ) {
 			  
 			var tetraVertexData = BABYLON.VertexData.CreatePolyhedron({type:0, size:1});
-			console.log(tetraVertexData);
-            console.log(positions[i]);
-			console.log(indices[i]);
 
 			var normals = [];
 			BABYLON.VertexData.ComputeNormals(positions[i], indices[i], normals);
-			console.log(normals);
 			
 			tetraVertexData.positions = positions[i];
 			tetraVertexData.indices = indices[i];
 			tetraVertexData.normals = normals;
+			
 			console.log(tetraVertexData);			
 						
-			var tetraMesh = new BABYLON.Mesh("tet" + i, scene);
+			var tetraMesh = new BABYLON.Mesh("tet_" + i, scene);
 			tetraVertexData.applyToMesh(tetraMesh);
+			tetraMesh.enableEdgesRendering();    
+            tetraMesh.edgesWidth = 4.0;
+            tetraMesh.edgesColor = new BABYLON.Color4(0, 0, 1, 1);
 
           }
                
