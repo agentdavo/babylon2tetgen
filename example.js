@@ -118,22 +118,16 @@
 			  	  
 			var posArray = positions[i];
 			var indArray = indices[i];
-			var normals = [];
-			BABYLON.VertexData.ComputeNormals(posArray, indArray, normals);
-				  
+			  
 		    var tetraVertexData = new BABYLON.VertexData();
 			tetraVertexData.positions = posArray;
 			tetraVertexData.indices = indArray;
-			tetraVertexData.normals = normals;
 			
 			console.log(tetraVertexData);
 
             var name = "tet_" + i;			
-			var tetMesh = BABYLON.Mesh(name, scene);
-			
+			var tetMesh = BABYLON.Mesh(name, scene);		
 			tetraVertexData.applyToMesh(tetraMesh);
-
-			tetraMesh.convertToFlatShadedMesh();
 			console.log("tetraMesh " + name + " rendered!");
           }
                

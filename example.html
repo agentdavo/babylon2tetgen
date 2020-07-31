@@ -21,13 +21,24 @@
             }
         </style>
 
+        <link rel="stylesheet" href="https://use.typekit.net/cta4xsb.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />  
+
+        <!-- Dependencies -->
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        
+        <!-- Babylon.js -->
         <script src="https://preview.babylonjs.com/babylon.js"></script>
-        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-        <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
-	<script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/nodeEditor/babylon.nodeEditor.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
         <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
         <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-	<script src="example.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+	    <script src="example.js"></script>
     </head>
 
    <body>
@@ -51,7 +62,7 @@
 
     // camera
     var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 0, new BABYLON.Vector3(0, 0, -0), scene);
-    camera.setPosition(new BABYLON.Vector3(0, 0, -60));
+    camera.setPosition(new BABYLON.Vector3(0, 0, -30));
     camera.attachControl(canvas, true);
 
     var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
@@ -64,17 +75,17 @@
 
 
             // Add and manipulate meshes in the scene
-          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:30, segments:12}, scene);
-          sphere.forceSharedVertices();
+          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:20, segments:16}, scene);
+          // sphere.forceSharedVertices();
 
 
 	  var alphamat = new BABYLON.StandardMaterial('alphamat', scene);
 	  alphamat.diffuseColor = BABYLON.Color3.Blue();
 	  alphamat.emissiveColor = new BABYLON.Color3(1.0,.1,.1);
-	  alphamat.alpha = 0.4;
+	  alphamat.alpha = 0.1;
 	  sphere.material = alphamat;
 	  sphere.enableEdgesRendering();
-	  sphere.edgesWidth = 2.0;
+	  sphere.edgesWidth = 5.0;
 	  sphere.edgesColor = new BABYLON.Color4(1,0,0,1);
 
 
