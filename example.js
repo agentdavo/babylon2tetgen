@@ -111,21 +111,32 @@
 			  indices.push(temp);
           }
           console.log(indices);
+		  
+		  
+		  
 
 
 		  
-          for ( var i = 0; i < indices.length ; i++ ) {
+          for ( var i = 0; i < 10 ; i++ ) {
 			  
-			var tetraVertexData = BABYLON.VertexData();
+			var posArray = positions[i];
+			var indArray = indices[i];
 			
-			tetraVertexData.positions = positions[i];
-			tetraVertexData.indices = indices[i];
+			console.log(posArray);
+			console.log(indArray);
+			  
+			var tetraVertexData = new BABYLON.VertexData();
+			
+			tetraVertexData.positions = posArray;
+			tetraVertexData.indices = indArray;
 			
 			console.log(tetraVertexData);			
 						
 			var tetraMesh = new BABYLON.Mesh("tet_" + i, scene);
 			
 			tetraVertexData.applyToMesh(tetraMesh);
+			
+			tetraMesh.convertToFlatShadedMesh();
 			
 			tetraMesh.enableEdgesRendering();    
             tetraMesh.edgesWidth = 4.0;
