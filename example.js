@@ -139,7 +139,7 @@
 			var tetraMesh = new BABYLON.Mesh(name, scene);
 			
 			tetraVertexData.applyToMesh(tetraMesh);
-            console.log("tetraMesh " + name " rendered!");
+            console.log("tetraMesh " + name + " rendered!");
 
 			tetraMesh.enableEdgesRendering(); 
           }
