@@ -36,18 +36,14 @@ extern "C" int babylon2tetgen(
     // tetgen options begin
     /////////////////////////////
     tetgenbehavior b;
-	b.object = tetgenbehavior::POLY;
-	b.plc=1;
-	b.order=1;
-	b.verbose=1;
-    b.refine=1;
-    b.quality=1;
-    b.nobisect=1;
-    b.minratio=1.5;
-    b.mindihedral=10.0;
-    b.varvolume=1;
-    b.fixedvolume=1;
-    b.maxvolume=0.01;
+	b.quality=1;
+	b.minratio=1.1;
+	b.mindihedral=10.0;
+	b.verbose=2;
+	b.nobisect=1;
+	b.steinerleft=100000;
+    b.order=1;
+    b.object = tetgenbehavior::POLY;
 	
     ////////////////////////////
     // tetgen options end
