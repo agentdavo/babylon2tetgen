@@ -38,17 +38,18 @@ extern "C" int babylon2tetgen(
     tetgenbehavior b;
     b.object = tetgenbehavior::POLY;
     b.zeroindex = 0;
-    b.docheck = 1;
-    b.verbose = 0;
+    b.docheck = 0;
+    b.verbose = 1;
     b.quiet = 0;
     b.diagnose = 0;
-    b.mindihedral = 20;
-    b.minratio = 1.5;
+    b.mindihedral = 10;
+    b.minratio = 1.414;
     b.plc = 1;
     b.quality = 1;
     b.epsilon = 1.e-12;
-    b.facesout = 1;
-    b.edgesout = 1;
+	b.insertaddpoints = 1;
+    //b.facesout = 1;
+    //b.edgesout = 1;
     //b.neighout = 1;
     // Preserves the input surface mesh
     b.nobisect = 1;
@@ -58,7 +59,9 @@ extern "C" int babylon2tetgen(
     b.nomergevertex = 0;
     b.nojettison = 0;
     // Maximum tetrahedron volume constraint. Assumes uniform mesh density on the surface
-    // b.fixedvolume = 1;
+    b.fixedvolume = 1;
+	b.maxvolume = 0.1;
+	b.varvolume = 1;
     // creates linear tetrahedrals
     b.order = 1;
     ////////////////////////////
