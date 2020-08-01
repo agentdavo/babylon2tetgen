@@ -38,7 +38,7 @@ extern "C" int babylon2tetgen(
     tetgenbehavior b;
     b.object = tetgenbehavior::POLY;
     b.zeroindex = 0;
-    b.docheck = 0;
+    b.docheck = 1;
     b.verbose = 0;
     b.quiet = 0;
     b.diagnose = 0;
@@ -46,7 +46,7 @@ extern "C" int babylon2tetgen(
     b.minratio = 1.5;
     b.plc = 1;
     b.quality = 1;
-    b.epsilon = 1.e-8;
+    b.epsilon = 1.e-12;
     b.facesout = 1;
     b.edgesout = 1;
     //b.neighout = 1;
