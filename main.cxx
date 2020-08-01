@@ -36,36 +36,78 @@ extern "C" int babylon2tetgen(
     // tetgen options begin
     /////////////////////////////
     tetgenbehavior b;
-    b.plc = 1;
-	b.object = tetgenbehavior::POLY;
-	// creates linear tetrahedrals
-    b.order = 1;
-	b.verbose = 1;
-	// Preserves the input surface mesh
-    b.nobisect = 1;
-    b.nobisect_nomerge = 1;
-	b.mindihedral = 10.0;
-	b.minratio = 1.414;
-	b.maxvolume = 0.01;
-    b.varvolume = 0;
-	b.refine = 0;
-	b.coarsen = 0;
-	b.docheck = 0;
-    //b.metric = 0;
-    //b.zeroindex = 0;
-    //b.quiet = 0;
-    //b.diagnose = 0;
-    //b.epsilon = 1.e-12;
-	//b.insertaddpoints = 1;
-    //b.facesout = 1;
-    //b.edgesout = 1;
-    //b.neighout = 1;
-    //Disable removal of duplicate vertices and faces
-    //b.nomergefacet = 0;
-    //b.nomergevertex = 0;
-    //b.nojettison = 0;
-    // Maximum tetrahedron volume constraint
-    //b.fixedvolume = 0;
+	b.plc=1;
+	b.order=1;
+	b.verbose=0;
+	b.quiet=0;
+    b.psc=0;
+    b.refine=0;
+    b.quality=1;
+    b.nobisect=1;
+    b.coarsen=0;
+    b.metric=0;
+    b.weighted=0;
+    b.brio_hilbert=1;
+    b.incrflip=0;
+    b.flipinsert=0;
+    b.varvolume=0;
+    b.fixedvolume=0;
+    b.noexact=0;
+    b.nostaticfilter=0;
+    b.insertaddpoints=0;
+    b.regionattrib=0;
+    b.cdtrefine=0;
+    b.diagnose=0;
+    b.convex=0;
+    b.zeroindex=0;
+    b.facesout=0;
+    b.edgesout=0;
+    b.neighout=0;
+    b.voroout=0;
+    b.meditview=0;
+    b.vtkview=0;
+    b.nobound=0;
+    b.nonodewritten=1;
+    b.noelewritten=1;
+    b.nofacewritten=1;
+    b.noiterationnum=0;
+    b.nomergefacet=0;
+    b.nomergevertex=0;
+    b.nojettison=0;
+    b.docheck=0;
+    b.vertexperblock=4092;
+    b.tetrahedraperblock=8188;
+    b.shellfaceperblock=4092;
+    b.nobisect_nomerge=1;
+    b.supsteiner_level=2;
+    b.addsteiner_algo=1;
+    b.coarsen_param=0;
+    b.weighted_param=0;
+    b.fliplinklevel=-1; 
+    b.flipstarsize=-1;  
+    b.fliplinklevelinc=1;
+    b.reflevel=3;
+    b.optscheme=7;  
+    b.optlevel=2;
+    b.delmaxfliplevel=1;
+    b.reversetetori=0;
+    b.steinerleft=10000;
+    b.no_sort=0;
+    b.hilbert_order=52;
+    b.hilbert_limit=8;
+    b.brio_threshold=64;
+    b.brio_ratio=0.125;
+    b.facet_separate_ang_tol=179.9;
+    b.facet_overlap_ang_tol=0.1;
+    b.facet_small_ang_tol=15.0;
+    b.maxvolume=0.1;
+    b.minratio=1.1;
+    b.mindihedral=10.0;
+    b.optmaxdihedral=165.0;
+    b.optminsmtdihed=179.0;
+    b.optminslidihed=179.0;
+    b.epsilon=1.0e-8;
+    b.coarsen_percent=1.0;
 	
     ////////////////////////////
     // tetgen options end
