@@ -37,7 +37,7 @@ extern "C" int babylon2tetgen(
     /////////////////////////////
     tetgenbehavior b;
     b.object = tetgenbehavior::POLY;
-    b.zeroindex = 0;
+    b.zeroindex = 1;
     b.docheck = 0;
     b.verbose = 1;
     b.quiet = 0;
