@@ -40,11 +40,11 @@
       Module.HEAPF64.set(posData, posBuffer >> 3);
       Module.HEAPU32.set(indData, indBuffer >> 2);
 	  
-
+      // Allocate some space for the returned data from tegen
 	  var posDataOutCount = Module._malloc(1 * Uint32Array.BYTES_PER_ELEMENT);
       var indDataOutCount = Module._malloc(1 * Uint32Array.BYTES_PER_ELEMENT);
-	  var posDataOut = Module._malloc(posData.length * posData.BYTES_PER_ELEMENT);
-	  var indDataOut = Module._malloc(posData.length * indData.BYTES_PER_ELEMENT);
+	  var posDataOut = Module._malloc(32 * posData.length * posData.BYTES_PER_ELEMENT);
+	  var indDataOut = Module._malloc(8 * indData.length * indData.BYTES_PER_ELEMENT);
 	  
 	  Module.ccall('babylon2tetgen',
                         null,
