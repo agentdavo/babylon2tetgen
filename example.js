@@ -27,7 +27,7 @@
 	  var ind = sphereVertexData.indices;
 
 	  var posData = new Float64Array(pos);
-	  var indData = new Int32Array(ind);
+	  var indData = new Uint32Array(ind);
 
           console.log(posData);
           console.log(indData);
@@ -38,12 +38,13 @@
 
 	  // Assign the data to the heap
       Module.HEAPF64.set(posData, posBuffer >> 3);
-      Module.HEAP32.set(indData, indBuffer >> 2);
+      Module.HEAPU32.set(indData, indBuffer >> 2);
+	  
 
-	  var posDataOutCount = Module._malloc(4);
-      var indDataOutCount = Module._malloc(4);
-	  var posDataOut = Module._malloc(posData.length * 8 * 2);
-	  var indDataOut = Module._malloc(posData.length * 4 * 20);
+	  var posDataOutCount = Module._malloc(1 * Uint32Array.BYTES_PER_ELEMENT);
+      var indDataOutCount = Module._malloc(1 * Uint32Array.BYTES_PER_ELEMENT);
+	  var posDataOut = Module._malloc(posData.length * posData.BYTES_PER_ELEMENT);
+	  var indDataOut = Module._malloc(posData.length * indData.BYTES_PER_ELEMENT);
 	  
 	  Module.ccall('babylon2tetgen',
                         null,
