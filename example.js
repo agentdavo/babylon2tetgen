@@ -92,6 +92,11 @@
 		  
 		 Module._free(posBuffer);
          Module._free(indBuffer);
+		 Module._free(posDataOutCount);
+		 Module._free(posDataOut);
+		 Module._free(indDataOutCount);
+		 Module._free(indDataOut);
+
 		  
 		  
 		 ////////////////////////////////////////////////////////////////////////////////////
