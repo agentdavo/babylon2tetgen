@@ -37,8 +37,8 @@
       var indBuffer = Module._malloc(indData.length * indData.BYTES_PER_ELEMENT);
 
 	  // Assign the data to the heap
-      Module.HEAPF64.set(posData, positionBuffer >> 3);
-      Module.HEAP32.set(indData, indexBuffer >> 2);
+      Module.HEAPF64.set(posData, posBuffer >> 3);
+      Module.HEAP32.set(indData, indBuffer >> 2);
 
 	  var posDataOutCount = Module._malloc(4);
       var indDataOutCount = Module._malloc(4);
