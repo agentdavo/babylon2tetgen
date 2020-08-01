@@ -36,6 +36,7 @@ extern "C" int babylon2tetgen(
     // tetgen options begin
     /////////////////////////////
     tetgenbehavior b;
+	b.plc=1;
 	b.quality=1;
 	b.minratio=1.1;
 	b.mindihedral=10.0;
