@@ -52,8 +52,8 @@ extern "C" int babylon2tetgen(
     //b.edgesout = 1;
     //b.neighout = 1;
     // Preserves the input surface mesh
-    b.nobisect = 1;
-    b.nobisect_nomerge = 1;
+    b.nobisect = 0;
+    b.nobisect_nomerge = 0;
     // Disable removal of duplicate vertices and faces
     b.nomergefacet = 0;
     b.nomergevertex = 0;
