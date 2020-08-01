@@ -7,7 +7,7 @@ CXX=em++
 
 DEBUG_LEVEL = -g3
 EXTRA_CCFLAGS = 
-CXXFLAGS = -O0 $(DEBUG_LEVEL) $(EXTRA_CCFLAGS)
+CXXFLAGS = -O3 $(DEBUG_LEVEL) $(EXTRA_CCFLAGS)
 PREDCXXFLAGS = -O0 $(DEBUG_LEVEL) $(EXTRA_CCFLAGS)
 
 BUILD = build
@@ -24,7 +24,7 @@ libtetgen.o: $(TETGEN)/tetgen.cxx
 babylon2tet: predicates.o libtetgen.o main.cxx
 	$(CXX) $(CXXFLAGS) -I $(TETGEN) $(BUILD)/predicates.o $(BUILD)/libtetgen.o main.cxx -o babylon2tet.js \
     -s ENVIRONMENT=web \
-    -s WASM=0 \
+    -s WASM=1 \
     -s ALLOW_MEMORY_GROWTH=1 \
     --memory-init-file 0 \
     -s FORCE_FILESYSTEM=1 \
