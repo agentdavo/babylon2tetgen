@@ -36,11 +36,11 @@ extern "C" int babylon2tetgen(
     // tetgen options begin
     /////////////////////////////
     tetgenbehavior b;
+	b.object = tetgenbehavior::POLY;
 	b.plc=1;
 	b.order=1;
-	b.verbose=0;
+	b.verbose=1;
 	b.quiet=0;
-    b.psc=0;
     b.refine=0;
     b.quality=1;
     b.nobisect=1;
@@ -67,9 +67,9 @@ extern "C" int babylon2tetgen(
     b.meditview=0;
     b.vtkview=0;
     b.nobound=0;
-    b.nonodewritten=1;
-    b.noelewritten=1;
-    b.nofacewritten=1;
+    b.nonodewritten=0;
+    b.noelewritten=0;
+    b.nofacewritten=0;
     b.noiterationnum=0;
     b.nomergefacet=0;
     b.nomergevertex=0;
@@ -101,12 +101,12 @@ extern "C" int babylon2tetgen(
     b.facet_overlap_ang_tol=0.1;
     b.facet_small_ang_tol=15.0;
     b.maxvolume=0.1;
-    b.minratio=1.1;
+    b.minratio=1.5;
     b.mindihedral=10.0;
     b.optmaxdihedral=165.0;
     b.optminsmtdihed=179.0;
     b.optminslidihed=179.0;
-    b.epsilon=1.0e-8;
+    b.epsilon=1.0e-10;
     b.coarsen_percent=1.0;
 	
     ////////////////////////////
