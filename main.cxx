@@ -36,43 +36,38 @@ extern "C" int babylon2tetgen(
     // tetgen options begin
     /////////////////////////////
     tetgenbehavior b;
-    b.object = tetgenbehavior::POLY;
     b.plc = 1;
-    b.quality = 1;
-    b.refine = 0;
-    b.coarsen = 0;
-    b.metric = 0;
-	
-    b.zeroindex = 0;
-    b.docheck = 0;
-    b.verbose = 1;
-    b.quiet = 0;
-    b.diagnose = 0;
-    b.mindihedral = 20;
-    b.minratio = 1.5;
-    b.epsilon = 1.e-12;
-	
+	b.object = tetgenbehavior::POLY;
+	// creates linear tetrahedrals
+    b.order = 1;
+	b.verbose = 1;
+	// Preserves the input surface mesh
+    b.nobisect = 1;
+    b.nobisect_nomerge = 1;
+	b.mindihedral = 20;
+	b.minratio = 1.5;
+    //b.quality = 1;
+    //b.refine = 0;
+    //b.coarsen = 0;
+    //b.metric = 0;
+    //b.zeroindex = 0;
+    //b.docheck = 0;
+    //b.quiet = 0;
+    //b.diagnose = 0;
+    //b.epsilon = 1.e-12;
 	//b.insertaddpoints = 1;
     //b.facesout = 1;
     //b.edgesout = 1;
     //b.neighout = 1;
+    //Disable removal of duplicate vertices and faces
+    //b.nomergefacet = 0;
+    //b.nomergevertex = 0;
+    //b.nojettison = 0;
+    // Maximum tetrahedron volume constraint
+	//b.varvolume = 0;
+    //b.fixedvolume = 0;
+	//b.maxvolume = 0.1;
 	
-    // Preserves the input surface mesh
-    b.nobisect = 1;
-    b.nobisect_nomerge = 1;
-	
-    // Disable removal of duplicate vertices and faces
-    b.nomergefacet = 0;
-    b.nomergevertex = 0;
-    b.nojettison = 0;
-	
-    // Maximum tetrahedron volume constraint. Assumes uniform mesh density on the surface
-	b.varvolume = 0;
-    b.fixedvolume = 1;
-	b.maxvolume = 0.1;
-	
-    // creates linear tetrahedrals
-    b.order = 1;
     ////////////////////////////
     // tetgen options end
     ////////////////////////////
