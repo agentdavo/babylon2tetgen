@@ -44,6 +44,7 @@ extern "C" int babylon2tetgen(
 	b.nobisect=1;
 	b.steinerleft=100000;
     b.order=1;
+	b.maxvolume=0.1;
     b.object = tetgenbehavior::POLY;
 	
     ////////////////////////////
