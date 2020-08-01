@@ -31,16 +31,14 @@
 
           console.log(posData);
           console.log(indData);
+		  
+      // Allocate some space in the heap for the data
+      var posBuffer = Module._malloc(posData.length * posData.BYTES_PER_ELEMENT);
+      var indBuffer = Module._malloc(indData.length * indData.BYTES_PER_ELEMENT);
 
-	  var posDataBytes = posData.length * posData.BYTES_PER_ELEMENT;
-	  var posDataPtr = Module._malloc(posDataBytes);
-	  var posData_alloc = new Uint8Array(Module.HEAPU8.buffer, posDataPtr, posDataBytes);
-	  posData_alloc.set(new Uint8Array(posData.buffer));
-
-	  var indDataBytes = indData.length * indData.BYTES_PER_ELEMENT;
-	  var indDataPtr = Module._malloc(indDataBytes);
-	  var indData_alloc = new Uint8Array(Module.HEAPU8.buffer, indDataPtr, indDataBytes);
-	  indData_alloc.set(new Uint8Array(indData.buffer));
+	  // Assign the data to the heap
+      Module.HEAPF64.set(posData, positionBuffer >> 3);
+      Module.HEAP32.set(indData, indexBuffer >> 2);
 
 	  var posDataOutCount = Module._malloc(4);
       var indDataOutCount = Module._malloc(4);
@@ -52,7 +50,7 @@
                       ['number','number', 'number', 'number',
                        'number', 'number', 'number', 'number'],
                       [
-                          posData.length, posData_alloc.byteOffset, indData.length, indData_alloc.byteOffset,
+                          posData.length, posBuffer, indData.length, indBuffer,
                           posDataOutCount, posDataOut, indDataOutCount, indDataOut
                       ]);
 	  
@@ -65,13 +63,6 @@
 	      console.log("newIndCount:");    
           console.log(newIndCount);
 
-
-	     ////////////////////////////////////////////////////////////////////////////////////
-	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
-         // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
-         // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
-         ////////////////////////////////////////////////////////////////////////////////////
-		 
 		  var tetVertexDataPos = [];
 		  var tetVertexDataInd = [];
 	      
@@ -97,6 +88,17 @@
               tetVertexDataInd.push(tetraInd0, tetraInd3, tetraInd1);
           }
           console.log(tetVertexDataInd);
+		  
+		  
+		 Module._free(posBuffer);
+         Module._free(indBuffer);
+		  
+		  
+		 ////////////////////////////////////////////////////////////////////////////////////
+	     // BABYLON.MeshBuilder.CreatePolyhedron custom expecting
+         // vertexPoints = [ [0,0,1.7] , [1.6,0,-0.5] , [-0.8,1.4,-0.5] , [-0.8,-1.4,-0.5] ]
+         // facePoints   = [ [0,1,2] , [0,2,3] , [0,3,1] , [1,3,2] ]
+         ////////////////////////////////////////////////////////////////////////////////////
 		  	  	    
 			tetraVertexData = new BABYLON.VertexData();
 			tetraVertexData.positions = tetVertexDataPos;
