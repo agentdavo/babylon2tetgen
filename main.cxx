@@ -59,9 +59,9 @@ extern "C" int babylon2tetgen(
     b.nomergevertex = 0;
     b.nojettison = 0;
     // Maximum tetrahedron volume constraint. Assumes uniform mesh density on the surface
-    b.fixedvolume = 1;
-	b.maxvolume = 0.5;
-	b.varvolume = 1;
+	b.varvolume = 0;
+    b.fixedvolume = 0;
+	b.maxvolume = 2.0;
     // creates linear tetrahedrals
     b.order = 1;
     ////////////////////////////
