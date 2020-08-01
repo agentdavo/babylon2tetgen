@@ -44,14 +44,15 @@ extern "C" int babylon2tetgen(
 	// Preserves the input surface mesh
     b.nobisect = 1;
     b.nobisect_nomerge = 1;
-	b.mindihedral = 20;
-	b.minratio = 1.5;
-    //b.quality = 1;
-    //b.refine = 0;
-    //b.coarsen = 0;
+	b.mindihedral = 10.0;
+	b.minratio = 1.414;
+	b.maxvolume = 0.01;
+    b.varvolume = 0;
+	b.refine = 0;
+	b.coarsen = 0;
+	b.docheck = 0;
     //b.metric = 0;
     //b.zeroindex = 0;
-    //b.docheck = 0;
     //b.quiet = 0;
     //b.diagnose = 0;
     //b.epsilon = 1.e-12;
@@ -64,9 +65,7 @@ extern "C" int babylon2tetgen(
     //b.nomergevertex = 0;
     //b.nojettison = 0;
     // Maximum tetrahedron volume constraint
-	//b.varvolume = 0;
     //b.fixedvolume = 0;
-	//b.maxvolume = 0.1;
 	
     ////////////////////////////
     // tetgen options end
