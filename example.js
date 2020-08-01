@@ -6,18 +6,18 @@
 	  if (Module) {
 	      Module['onRuntimeInitialized'] = check_em();
 	  } else {
-	      window.setTimeout(function() { check_emscripten(); }, 100);
+	      window.setTimeout(function() { check_emscripten(); }, 200);
 	  }
       }
 
-      var g_call_it_count=50;
+      var g_call_it_count=100;
 
       var call_it = function(sphere, resolve,reject) {
 
 	  if (!g_emscripten_alive) {
 	      g_call_it_count--;
-	      if (g_call_it_count<=0) { reject("Error, emscripten didn't start"); g_call_it_count=50; return; }
-	      window.setTimeout(function() { call_it(sphere,resolve,reject); },100);
+	      if (g_call_it_count<=0) { reject("Error, emscripten didn't start"); g_call_it_count=100; return; }
+	      window.setTimeout(function() { call_it(sphere,resolve,reject); },200);
 	      return;
 	  }
 
@@ -118,12 +118,12 @@
 		    tetraMesh.edgesWidth = 1.0;
 	        tetraMesh.edgesColor = new BABYLON.Color4(0, 1, 0, 1);
 
-	  g_call_it_count=50;
+	  g_call_it_count=100;
       };
 
       var processmesh = function(mesh) {
 	  var prom = new Promise(function(resolve,reject) {
-	      window.setTimeout(function() { call_it(mesh,resolve,reject); },100);
+	      window.setTimeout(function() { call_it(mesh,resolve,reject); },200);
 	  });
 	  return prom;
       }
