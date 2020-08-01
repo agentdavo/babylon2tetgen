@@ -75,7 +75,7 @@
 
 
           // Add and manipulate meshes in the scene
-          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:20, segments:8}, scene);
+          var sphere = BABYLON.Mesh.CreateTorusKnot("knot0", 5, 0.5, 128, 64, 2, 3, scene);
           sphere.forceSharedVertices();
 
 
