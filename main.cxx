@@ -117,7 +117,7 @@ extern "C" int babylon2tetgen(
 
 }
 
-
+EMSCRIPTEN_KEEPALIVE
 int main() {
   printf("main!\n");
   return 0;

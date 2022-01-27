@@ -28,7 +28,7 @@ babylon2tet: predicates.o libtetgen.o main.cxx
     -s ALLOW_MEMORY_GROWTH=1 \
     --memory-init-file 0 \
     -s FORCE_FILESYSTEM=1 \
-    -s EXTRA_EXPORTED_RUNTIME_METHODS="['ccall','cwrap','babylon2tetgen']" \
+    -s EXPORTED_RUNTIME_METHODS="['ccall','cwrap']" \
     -s ASSERTIONS=2 \
     -s SAFE_HEAP=0 -s ALIASING_FUNCTION_POINTERS=0 \
     -s DISABLE_EXCEPTION_CATCHING=2 \
