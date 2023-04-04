@@ -4,6 +4,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 #include "tetgen/tetgen.h"
 #include <emscripten.h>
@@ -72,9 +73,9 @@ extern "C" int babylon2tetgen(
       tetgenio::polygon *p = &f->polygonlist[0];
       p->numberofvertices = 3;
       p->vertexlist = new int[p->numberofvertices];
-      p->vertexlist[0] = (int)bindices[i*3+0];
-      p->vertexlist[1] = (int)bindices[i*3+1];
-      p->vertexlist[2] = (int)bindices[i*3+2];
+      p->vertexlist[0] = static_cast<int>(bindices[i * 3 + 0]);
+      p->vertexlist[1] = static_cast<int>(bindices[i * 3 + 1]);
+      p->vertexlist[2] = static_cast<int>(bindices[i * 3 + 2]);
       in.facetmarkerlist[i] = 0;
     }
 
@@ -110,8 +111,18 @@ extern "C" int babylon2tetgen(
     //printf("edges:%d  edgesml:%d\n", out.numberofedges, out.edgemarkerlist != NULL ? 1 : 0);
     //printf("first pts: %.16g  %.16g  %.16g\n", out.pointlist[0], out.pointlist[1], out.pointlist[2]);
     //printf("first tet: todo \n");
+	
+    delete[] in.pointlist;
+    delete[] in.facetmarkerlist;
+       for (int i = 0; i < numfacets; i++) {
+       tetgenio::facet* f = &in.facetlist[i];
+       delete[] f->polygonlist[0].vertexlist;
+       delete[] f->polygonlist;
+     }
+    delete[] in.facetlist;
 
     printf("tetrahedralizeEnd!\n");
+	
 
     return 0;
 
