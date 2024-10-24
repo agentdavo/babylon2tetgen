@@ -1,8 +1,6 @@
-var Module = typeof Module !== "undefined" ? Module : {};
+var Module = typeof Module != "undefined" ? Module : {};
 
-var objAssign = Object.assign;
-
-var moduleOverrides = objAssign({}, Module);
+var moduleOverrides = Object.assign({}, Module);
 
 var arguments_ = [];
 
@@ -38,14 +36,14 @@ var read_, readAsync, readBinary, setWindowTitle;
 function logExceptionOnExit(e) {
  if (e instanceof ExitStatus) return;
  let toLog = e;
- if (e && typeof e === "object" && e.stack) {
+ if (e && typeof e == "object" && e.stack) {
   toLog = [ e, e.stack ];
  }
  err("exiting due to exception: " + toLog);
 }
 
 if (ENVIRONMENT_IS_SHELL) {
- if (typeof process === "object" && typeof require === "function" || typeof window === "object" || typeof importScripts === "function") throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
+ if (typeof process == "object" && typeof require === "function" || typeof window == "object" || typeof importScripts == "function") throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
  if (typeof read != "undefined") {
   read_ = function shell_read(f) {
    return read(f);
@@ -53,11 +51,11 @@ if (ENVIRONMENT_IS_SHELL) {
  }
  readBinary = function readBinary(f) {
   let data;
-  if (typeof readbuffer === "function") {
+  if (typeof readbuffer == "function") {
    return new Uint8Array(readbuffer(f));
   }
   data = read(f, "binary");
-  assert(typeof data === "object");
+  assert(typeof data == "object");
   return data;
  };
  readAsync = function readAsync(f, onload, onerror) {
@@ -68,21 +66,21 @@ if (ENVIRONMENT_IS_SHELL) {
  } else if (typeof arguments != "undefined") {
   arguments_ = arguments;
  }
- if (typeof quit === "function") {
+ if (typeof quit == "function") {
   quit_ = ((status, toThrow) => {
    logExceptionOnExit(toThrow);
    quit(status);
   });
  }
- if (typeof print !== "undefined") {
-  if (typeof console === "undefined") console = {};
+ if (typeof print != "undefined") {
+  if (typeof console == "undefined") console = {};
   console.log = print;
-  console.warn = console.error = typeof printErr !== "undefined" ? printErr : print;
+  console.warn = console.error = typeof printErr != "undefined" ? printErr : print;
  }
 } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
  if (ENVIRONMENT_IS_WORKER) {
   scriptDirectory = self.location.href;
- } else if (typeof document !== "undefined" && document.currentScript) {
+ } else if (typeof document != "undefined" && document.currentScript) {
   scriptDirectory = document.currentScript.src;
  }
  if (scriptDirectory.indexOf("blob:") !== 0) {
@@ -90,7 +88,7 @@ if (ENVIRONMENT_IS_SHELL) {
  } else {
   scriptDirectory = "";
  }
- if (!(typeof window === "object" || typeof importScripts === "function")) throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
+ if (!(typeof window == "object" || typeof importScripts == "function")) throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
  {
   read_ = (url => {
    var xhr = new XMLHttpRequest();
@@ -131,7 +129,7 @@ var out = Module["print"] || console.log.bind(console);
 
 var err = Module["printErr"] || console.warn.bind(console);
 
-objAssign(Module, moduleOverrides);
+Object.assign(Module, moduleOverrides);
 
 moduleOverrides = null;
 
@@ -168,23 +166,23 @@ if (!Object.getOwnPropertyDescriptor(Module, "quit")) {
  });
 }
 
-assert(typeof Module["memoryInitializerPrefixURL"] === "undefined", "Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead");
+assert(typeof Module["memoryInitializerPrefixURL"] == "undefined", "Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead");
 
-assert(typeof Module["pthreadMainPrefixURL"] === "undefined", "Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead");
+assert(typeof Module["pthreadMainPrefixURL"] == "undefined", "Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead");
 
-assert(typeof Module["cdInitializerPrefixURL"] === "undefined", "Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead");
+assert(typeof Module["cdInitializerPrefixURL"] == "undefined", "Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead");
 
-assert(typeof Module["filePackagePrefixURL"] === "undefined", "Module.filePackagePrefixURL option was removed, use Module.locateFile instead");
+assert(typeof Module["filePackagePrefixURL"] == "undefined", "Module.filePackagePrefixURL option was removed, use Module.locateFile instead");
 
-assert(typeof Module["read"] === "undefined", "Module.read option was removed (modify read_ in JS)");
+assert(typeof Module["read"] == "undefined", "Module.read option was removed (modify read_ in JS)");
 
-assert(typeof Module["readAsync"] === "undefined", "Module.readAsync option was removed (modify readAsync in JS)");
+assert(typeof Module["readAsync"] == "undefined", "Module.readAsync option was removed (modify readAsync in JS)");
 
-assert(typeof Module["readBinary"] === "undefined", "Module.readBinary option was removed (modify readBinary in JS)");
+assert(typeof Module["readBinary"] == "undefined", "Module.readBinary option was removed (modify readBinary in JS)");
 
-assert(typeof Module["setWindowTitle"] === "undefined", "Module.setWindowTitle option was removed (modify setWindowTitle in JS)");
+assert(typeof Module["setWindowTitle"] == "undefined", "Module.setWindowTitle option was removed (modify setWindowTitle in JS)");
 
-assert(typeof Module["TOTAL_MEMORY"] === "undefined", "Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY");
+assert(typeof Module["TOTAL_MEMORY"] == "undefined", "Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY");
 
 if (!Object.getOwnPropertyDescriptor(Module, "read")) {
  Object.defineProperty(Module, "read", {
@@ -239,7 +237,7 @@ function warnOnce(text) {
 }
 
 function convertJsFunctionToWasm(func, sig) {
- if (typeof WebAssembly.Function === "function") {
+ if (typeof WebAssembly.Function == "function") {
   var typeNames = {
    "i": "i32",
    "j": "i64",
@@ -343,7 +341,7 @@ if (!Object.getOwnPropertyDescriptor(Module, "noExitRuntime")) {
  });
 }
 
-if (typeof WebAssembly !== "object") {
+if (typeof WebAssembly != "object") {
  abort("no native wasm support detected");
 }
 
@@ -419,7 +417,7 @@ function cwrap(ident, returnType, argTypes, opts) {
 
 var ALLOC_STACK = 1;
 
-var UTF8Decoder = typeof TextDecoder !== "undefined" ? new TextDecoder("utf8") : undefined;
+var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf8") : undefined;
 
 function UTF8ArrayToString(heap, idx, maxBytesToRead) {
  var endIdx = idx + maxBytesToRead;
@@ -512,7 +510,7 @@ function lengthBytesUTF8(str) {
  return len;
 }
 
-var UTF16Decoder = typeof TextDecoder !== "undefined" ? new TextDecoder("utf-16le") : undefined;
+var UTF16Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf-16le") : undefined;
 
 function writeArrayToMemory(array, buffer) {
  assert(array.length >= 0, "writeArrayToMemory array must have a length (should be an array or typed array)");
@@ -565,7 +563,7 @@ if (!Object.getOwnPropertyDescriptor(Module, "INITIAL_MEMORY")) {
 
 assert(INITIAL_MEMORY >= TOTAL_STACK, "INITIAL_MEMORY should be larger than TOTAL_STACK, was " + INITIAL_MEMORY + "! (TOTAL_STACK=" + TOTAL_STACK + ")");
 
-assert(typeof Int32Array !== "undefined" && typeof Float64Array !== "undefined" && Int32Array.prototype.subarray !== undefined && Int32Array.prototype.set !== undefined, "JS engine does not provide full typed array support");
+assert(typeof Int32Array != "undefined" && typeof Float64Array !== "undefined" && Int32Array.prototype.subarray != undefined && Int32Array.prototype.set != undefined, "JS engine does not provide full typed array support");
 
 assert(!Module["wasmMemory"], "Use of `wasmMemory` detected.  Use -s IMPORTED_MEMORY to define wasmMemory externally");
 
@@ -703,7 +701,7 @@ function addRunDependency(id) {
  if (id) {
   assert(!runDependencyTracking[id]);
   runDependencyTracking[id] = 1;
-  if (runDependencyWatcher === null && typeof setInterval !== "undefined") {
+  if (runDependencyWatcher === null && typeof setInterval != "undefined") {
    runDependencyWatcher = setInterval(function() {
     if (ABORT) {
      clearInterval(runDependencyWatcher);
@@ -821,7 +819,7 @@ function getBinary(file) {
 
 function getBinaryPromise() {
  if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
-  if (typeof fetch === "function") {
+  if (typeof fetch == "function") {
    return fetch(wasmBinaryFile, {
     credentials: "same-origin"
    }).then(function(response) {
@@ -876,7 +874,7 @@ function createWasm() {
   });
  }
  function instantiateAsync() {
-  if (!wasmBinary && typeof WebAssembly.instantiateStreaming === "function" && !isDataURI(wasmBinaryFile) && typeof fetch === "function") {
+  if (!wasmBinary && typeof WebAssembly.instantiateStreaming == "function" && !isDataURI(wasmBinaryFile) && typeof fetch == "function") {
    return fetch(wasmBinaryFile, {
     credentials: "same-origin"
    }).then(function(response) {
@@ -916,7 +914,7 @@ function callRuntimeCallbacks(callbacks) {
    continue;
   }
   var func = callback.func;
-  if (typeof func === "number") {
+  if (typeof func == "number") {
    if (callback.arg === undefined) {
     getWasmTableEntry(func)();
    } else {
@@ -1047,8 +1045,9 @@ function ___cxa_throw(ptr, type, destructor) {
  throw ptr + " - Exception catching is disabled, this exception cannot be caught. Compile with -s NO_DISABLE_EXCEPTION_CATCHING or -s EXCEPTION_CATCHING_ALLOWED=[..] to catch.";
 }
 
-function ___handle_stack_overflow() {
- abort("stack overflow");
+function ___handle_stack_overflow(requested) {
+ requested = requested >>> 0;
+ abort("stack overflow (Attempt to set SP to 0x" + requested.toString(16) + ", with stack limits [0x" + _emscripten_stack_get_end().toString(16) + " - 0x" + _emscripten_stack_get_base().toString(16) + "])");
 }
 
 function setErrNo(value) {
@@ -1126,7 +1125,7 @@ var PATH = {
 };
 
 function getRandomDevice() {
- if (typeof crypto === "object" && typeof crypto["getRandomValues"] === "function") {
+ if (typeof crypto == "object" && typeof crypto["getRandomValues"] == "function") {
   var randomBuffer = new Uint8Array(1);
   return function() {
    crypto.getRandomValues(randomBuffer);
@@ -1142,7 +1141,7 @@ var PATH_FS = {
   var resolvedPath = "", resolvedAbsolute = false;
   for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
    var path = i >= 0 ? arguments[i] : FS.cwd();
-   if (typeof path !== "string") {
+   if (typeof path != "string") {
     throw new TypeError("Arguments to path.resolve must be strings");
    } else if (!path) {
     return "";
@@ -1313,7 +1312,7 @@ var TTY = {
 };
 
 function mmapAlloc(size) {
- abort("internal error: mmapAlloc called but `memalign` native symbol not exported");
+ abort("internal error: mmapAlloc called but `emscripten_builtin_memalign` native symbol not exported");
 }
 
 var MEMFS = {
@@ -1788,7 +1787,7 @@ var FS = {
  genericErrors: {},
  filesystems: null,
  syncFSRequests: 0,
- lookupPath: function(path, opts = {}) {
+ lookupPath: (path, opts = {}) => {
   path = PATH_FS.resolve(FS.cwd(), path);
   if (!path) return {
    path: "",
@@ -1806,9 +1805,7 @@ var FS = {
   if (opts.recurse_count > 8) {
    throw new FS.ErrnoError(32);
   }
-  var parts = PATH.normalizeArray(path.split("/").filter(function(p) {
-   return !!p;
-  }), false);
+  var parts = PATH.normalizeArray(path.split("/").filter(p => !!p), false);
   var current = FS.root;
   var current_path = "/";
   for (var i = 0; i < parts.length; i++) {
@@ -1843,7 +1840,7 @@ var FS = {
    node: current
   };
  },
- getPath: function(node) {
+ getPath: node => {
   var path;
   while (true) {
    if (FS.isRoot(node)) {
@@ -1855,19 +1852,19 @@ var FS = {
    node = node.parent;
   }
  },
- hashName: function(parentid, name) {
+ hashName: (parentid, name) => {
   var hash = 0;
   for (var i = 0; i < name.length; i++) {
    hash = (hash << 5) - hash + name.charCodeAt(i) | 0;
   }
   return (parentid + hash >>> 0) % FS.nameTable.length;
  },
- hashAddNode: function(node) {
+ hashAddNode: node => {
   var hash = FS.hashName(node.parent.id, node.name);
   node.name_next = FS.nameTable[hash];
   FS.nameTable[hash] = node;
  },
- hashRemoveNode: function(node) {
+ hashRemoveNode: node => {
   var hash = FS.hashName(node.parent.id, node.name);
   if (FS.nameTable[hash] === node) {
    FS.nameTable[hash] = node.name_next;
@@ -1882,7 +1879,7 @@ var FS = {
    }
   }
  },
- lookupNode: function(parent, name) {
+ lookupNode: (parent, name) => {
   var errCode = FS.mayLookup(parent);
   if (errCode) {
    throw new FS.ErrnoError(errCode, parent);
@@ -1896,40 +1893,40 @@ var FS = {
   }
   return FS.lookup(parent, name);
  },
- createNode: function(parent, name, mode, rdev) {
-  assert(typeof parent === "object");
+ createNode: (parent, name, mode, rdev) => {
+  assert(typeof parent == "object");
   var node = new FS.FSNode(parent, name, mode, rdev);
   FS.hashAddNode(node);
   return node;
  },
- destroyNode: function(node) {
+ destroyNode: node => {
   FS.hashRemoveNode(node);
  },
- isRoot: function(node) {
+ isRoot: node => {
   return node === node.parent;
  },
- isMountpoint: function(node) {
+ isMountpoint: node => {
   return !!node.mounted;
  },
- isFile: function(mode) {
+ isFile: mode => {
   return (mode & 61440) === 32768;
  },
- isDir: function(mode) {
+ isDir: mode => {
   return (mode & 61440) === 16384;
  },
- isLink: function(mode) {
+ isLink: mode => {
   return (mode & 61440) === 40960;
  },
- isChrdev: function(mode) {
+ isChrdev: mode => {
   return (mode & 61440) === 8192;
  },
- isBlkdev: function(mode) {
+ isBlkdev: mode => {
   return (mode & 61440) === 24576;
  },
- isFIFO: function(mode) {
+ isFIFO: mode => {
   return (mode & 61440) === 4096;
  },
- isSocket: function(mode) {
+ isSocket: mode => {
   return (mode & 49152) === 49152;
  },
  flagModes: {
@@ -1940,21 +1937,21 @@ var FS = {
   "a": 1089,
   "a+": 1090
  },
- modeStringToFlags: function(str) {
+ modeStringToFlags: str => {
   var flags = FS.flagModes[str];
-  if (typeof flags === "undefined") {
+  if (typeof flags == "undefined") {
    throw new Error("Unknown file open mode: " + str);
   }
   return flags;
  },
- flagsToPermissionString: function(flag) {
+ flagsToPermissionString: flag => {
   var perms = [ "r", "w", "rw" ][flag & 3];
   if (flag & 512) {
    perms += "w";
   }
   return perms;
  },
- nodePermissions: function(node, perms) {
+ nodePermissions: (node, perms) => {
   if (FS.ignorePermissions) {
    return 0;
   }
@@ -1967,20 +1964,20 @@ var FS = {
   }
   return 0;
  },
- mayLookup: function(dir) {
+ mayLookup: dir => {
   var errCode = FS.nodePermissions(dir, "x");
   if (errCode) return errCode;
   if (!dir.node_ops.lookup) return 2;
   return 0;
  },
- mayCreate: function(dir, name) {
+ mayCreate: (dir, name) => {
   try {
    var node = FS.lookupNode(dir, name);
    return 20;
   } catch (e) {}
   return FS.nodePermissions(dir, "wx");
  },
- mayDelete: function(dir, name, isdir) {
+ mayDelete: (dir, name, isdir) => {
   var node;
   try {
    node = FS.lookupNode(dir, name);
@@ -2005,7 +2002,7 @@ var FS = {
   }
   return 0;
  },
- mayOpen: function(node, flags) {
+ mayOpen: (node, flags) => {
   if (!node) {
    return 44;
   }
@@ -2019,7 +2016,7 @@ var FS = {
   return FS.nodePermissions(node, FS.flagsToPermissionString(flags));
  },
  MAX_OPEN_FDS: 4096,
- nextfd: function(fd_start = 0, fd_end = FS.MAX_OPEN_FDS) {
+ nextfd: (fd_start = 0, fd_end = FS.MAX_OPEN_FDS) => {
   for (var fd = fd_start; fd <= fd_end; fd++) {
    if (!FS.streams[fd]) {
     return fd;
@@ -2027,10 +2024,8 @@ var FS = {
   }
   throw new FS.ErrnoError(33);
  },
- getStream: function(fd) {
-  return FS.streams[fd];
- },
- createStream: function(stream, fd_start, fd_end) {
+ getStream: fd => FS.streams[fd],
+ createStream: (stream, fd_start, fd_end) => {
   if (!FS.FSStream) {
    FS.FSStream = function() {};
    FS.FSStream.prototype = {
@@ -2059,49 +2054,37 @@ var FS = {
     }
    };
   }
-  var newStream = new FS.FSStream();
-  for (var p in stream) {
-   newStream[p] = stream[p];
-  }
-  stream = newStream;
+  stream = Object.assign(new FS.FSStream(), stream);
   var fd = FS.nextfd(fd_start, fd_end);
   stream.fd = fd;
   FS.streams[fd] = stream;
   return stream;
  },
- closeStream: function(fd) {
+ closeStream: fd => {
   FS.streams[fd] = null;
  },
  chrdev_stream_ops: {
-  open: function(stream) {
+  open: stream => {
    var device = FS.getDevice(stream.node.rdev);
    stream.stream_ops = device.stream_ops;
    if (stream.stream_ops.open) {
     stream.stream_ops.open(stream);
    }
   },
-  llseek: function() {
+  llseek: () => {
    throw new FS.ErrnoError(70);
   }
  },
- major: function(dev) {
-  return dev >> 8;
- },
- minor: function(dev) {
-  return dev & 255;
- },
- makedev: function(ma, mi) {
-  return ma << 8 | mi;
- },
- registerDevice: function(dev, ops) {
+ major: dev => dev >> 8,
+ minor: dev => dev & 255,
+ makedev: (ma, mi) => ma << 8 | mi,
+ registerDevice: (dev, ops) => {
   FS.devices[dev] = {
    stream_ops: ops
   };
  },
- getDevice: function(dev) {
-  return FS.devices[dev];
- },
- getMounts: function(mount) {
+ getDevice: dev => FS.devices[dev],
+ getMounts: mount => {
   var mounts = [];
   var check = [ mount ];
   while (check.length) {
@@ -2111,8 +2094,8 @@ var FS = {
   }
   return mounts;
  },
- syncfs: function(populate, callback) {
-  if (typeof populate === "function") {
+ syncfs: (populate, callback) => {
+  if (typeof populate == "function") {
    callback = populate;
    populate = false;
   }
@@ -2139,15 +2122,15 @@ var FS = {
     doCallback(null);
    }
   }
-  mounts.forEach(function(mount) {
+  mounts.forEach(mount => {
    if (!mount.type.syncfs) {
     return done(null);
    }
    mount.type.syncfs(mount, populate, done);
   });
  },
- mount: function(type, opts, mountpoint) {
-  if (typeof type === "string") {
+ mount: (type, opts, mountpoint) => {
+  if (typeof type == "string") {
    throw type;
   }
   var root = mountpoint === "/";
@@ -2187,7 +2170,7 @@ var FS = {
   }
   return mountRoot;
  },
- unmount: function(mountpoint) {
+ unmount: mountpoint => {
   var lookup = FS.lookupPath(mountpoint, {
    follow_mount: false
   });
@@ -2197,7 +2180,7 @@ var FS = {
   var node = lookup.node;
   var mount = node.mounted;
   var mounts = FS.getMounts(mount);
-  Object.keys(FS.nameTable).forEach(function(hash) {
+  Object.keys(FS.nameTable).forEach(hash => {
    var current = FS.nameTable[hash];
    while (current) {
     var next = current.name_next;
@@ -2212,10 +2195,10 @@ var FS = {
   assert(idx !== -1);
   node.mount.mounts.splice(idx, 1);
  },
- lookup: function(parent, name) {
+ lookup: (parent, name) => {
   return parent.node_ops.lookup(parent, name);
  },
- mknod: function(path, mode, dev) {
+ mknod: (path, mode, dev) => {
   var lookup = FS.lookupPath(path, {
    parent: true
   });
@@ -2233,19 +2216,19 @@ var FS = {
   }
   return parent.node_ops.mknod(parent, name, mode, dev);
  },
- create: function(path, mode) {
+ create: (path, mode) => {
   mode = mode !== undefined ? mode : 438;
   mode &= 4095;
   mode |= 32768;
   return FS.mknod(path, mode, 0);
  },
- mkdir: function(path, mode) {
+ mkdir: (path, mode) => {
   mode = mode !== undefined ? mode : 511;
   mode &= 511 | 512;
   mode |= 16384;
   return FS.mknod(path, mode, 0);
  },
- mkdirTree: function(path, mode) {
+ mkdirTree: (path, mode) => {
   var dirs = path.split("/");
   var d = "";
   for (var i = 0; i < dirs.length; ++i) {
@@ -2258,15 +2241,15 @@ var FS = {
    }
   }
  },
- mkdev: function(path, mode, dev) {
-  if (typeof dev === "undefined") {
+ mkdev: (path, mode, dev) => {
+  if (typeof dev == "undefined") {
    dev = mode;
    mode = 438;
   }
   mode |= 8192;
   return FS.mknod(path, mode, dev);
  },
- symlink: function(oldpath, newpath) {
+ symlink: (oldpath, newpath) => {
   if (!PATH_FS.resolve(oldpath)) {
    throw new FS.ErrnoError(44);
   }
@@ -2287,7 +2270,7 @@ var FS = {
   }
   return parent.node_ops.symlink(parent, newname, oldpath);
  },
- rename: function(old_path, new_path) {
+ rename: (old_path, new_path) => {
   var old_dirname = PATH.dirname(old_path);
   var new_dirname = PATH.dirname(new_path);
   var old_name = PATH.basename(old_path);
@@ -2351,7 +2334,7 @@ var FS = {
    FS.hashAddNode(old_node);
   }
  },
- rmdir: function(path) {
+ rmdir: path => {
   var lookup = FS.lookupPath(path, {
    parent: true
   });
@@ -2371,7 +2354,7 @@ var FS = {
   parent.node_ops.rmdir(parent, name);
   FS.destroyNode(node);
  },
- readdir: function(path) {
+ readdir: path => {
   var lookup = FS.lookupPath(path, {
    follow: true
   });
@@ -2381,7 +2364,7 @@ var FS = {
   }
   return node.node_ops.readdir(node);
  },
- unlink: function(path) {
+ unlink: path => {
   var lookup = FS.lookupPath(path, {
    parent: true
   });
@@ -2404,7 +2387,7 @@ var FS = {
   parent.node_ops.unlink(parent, name);
   FS.destroyNode(node);
  },
- readlink: function(path) {
+ readlink: path => {
   var lookup = FS.lookupPath(path);
   var link = lookup.node;
   if (!link) {
@@ -2415,7 +2398,7 @@ var FS = {
   }
   return PATH_FS.resolve(FS.getPath(link.parent), link.node_ops.readlink(link));
  },
- stat: function(path, dontFollow) {
+ stat: (path, dontFollow) => {
   var lookup = FS.lookupPath(path, {
    follow: !dontFollow
   });
@@ -2428,12 +2411,12 @@ var FS = {
   }
   return node.node_ops.getattr(node);
  },
- lstat: function(path) {
+ lstat: path => {
   return FS.stat(path, true);
  },
- chmod: function(path, mode, dontFollow) {
+ chmod: (path, mode, dontFollow) => {
   var node;
-  if (typeof path === "string") {
+  if (typeof path == "string") {
    var lookup = FS.lookupPath(path, {
     follow: !dontFollow
    });
@@ -2449,19 +2432,19 @@ var FS = {
    timestamp: Date.now()
   });
  },
- lchmod: function(path, mode) {
+ lchmod: (path, mode) => {
   FS.chmod(path, mode, true);
  },
- fchmod: function(fd, mode) {
+ fchmod: (fd, mode) => {
   var stream = FS.getStream(fd);
   if (!stream) {
    throw new FS.ErrnoError(8);
   }
   FS.chmod(stream.node, mode);
  },
- chown: function(path, uid, gid, dontFollow) {
+ chown: (path, uid, gid, dontFollow) => {
   var node;
-  if (typeof path === "string") {
+  if (typeof path == "string") {
    var lookup = FS.lookupPath(path, {
     follow: !dontFollow
    });
@@ -2476,22 +2459,22 @@ var FS = {
    timestamp: Date.now()
   });
  },
- lchown: function(path, uid, gid) {
+ lchown: (path, uid, gid) => {
   FS.chown(path, uid, gid, true);
  },
- fchown: function(fd, uid, gid) {
+ fchown: (fd, uid, gid) => {
   var stream = FS.getStream(fd);
   if (!stream) {
    throw new FS.ErrnoError(8);
   }
   FS.chown(stream.node, uid, gid);
  },
- truncate: function(path, len) {
+ truncate: (path, len) => {
   if (len < 0) {
    throw new FS.ErrnoError(28);
   }
   var node;
-  if (typeof path === "string") {
+  if (typeof path == "string") {
    var lookup = FS.lookupPath(path, {
     follow: true
    });
@@ -2517,7 +2500,7 @@ var FS = {
    timestamp: Date.now()
   });
  },
- ftruncate: function(fd, len) {
+ ftruncate: (fd, len) => {
   var stream = FS.getStream(fd);
   if (!stream) {
    throw new FS.ErrnoError(8);
@@ -2527,7 +2510,7 @@ var FS = {
   }
   FS.truncate(stream.node, len);
  },
- utime: function(path, atime, mtime) {
+ utime: (path, atime, mtime) => {
   var lookup = FS.lookupPath(path, {
    follow: true
   });
@@ -2536,19 +2519,19 @@ var FS = {
    timestamp: Math.max(atime, mtime)
   });
  },
- open: function(path, flags, mode, fd_start, fd_end) {
+ open: (path, flags, mode, fd_start, fd_end) => {
   if (path === "") {
    throw new FS.ErrnoError(44);
   }
-  flags = typeof flags === "string" ? FS.modeStringToFlags(flags) : flags;
-  mode = typeof mode === "undefined" ? 438 : mode;
+  flags = typeof flags == "string" ? FS.modeStringToFlags(flags) : flags;
+  mode = typeof mode == "undefined" ? 438 : mode;
   if (flags & 64) {
    mode = mode & 4095 | 32768;
   } else {
    mode = 0;
   }
   var node;
-  if (typeof path === "object") {
+  if (typeof path == "object") {
    node = path;
   } else {
    path = PATH.normalize(path);
@@ -2592,13 +2575,10 @@ var FS = {
   var stream = FS.createStream({
    node: node,
    path: FS.getPath(node),
-   id: node.id,
    flags: flags,
-   mode: node.mode,
    seekable: true,
    position: 0,
    stream_ops: node.stream_ops,
-   node_ops: node.node_ops,
    ungotten: [],
    error: false
   }, fd_start, fd_end);
@@ -2613,7 +2593,7 @@ var FS = {
   }
   return stream;
  },
- close: function(stream) {
+ close: stream => {
   if (FS.isClosed(stream)) {
    throw new FS.ErrnoError(8);
   }
@@ -2629,10 +2609,10 @@ var FS = {
   }
   stream.fd = null;
  },
- isClosed: function(stream) {
+ isClosed: stream => {
   return stream.fd === null;
  },
- llseek: function(stream, offset, whence) {
+ llseek: (stream, offset, whence) => {
   if (FS.isClosed(stream)) {
    throw new FS.ErrnoError(8);
   }
@@ -2646,7 +2626,7 @@ var FS = {
   stream.ungotten = [];
   return stream.position;
  },
- read: function(stream, buffer, offset, length, position) {
+ read: (stream, buffer, offset, length, position) => {
   if (length < 0 || position < 0) {
    throw new FS.ErrnoError(28);
   }
@@ -2662,7 +2642,7 @@ var FS = {
   if (!stream.stream_ops.read) {
    throw new FS.ErrnoError(28);
   }
-  var seeking = typeof position !== "undefined";
+  var seeking = typeof position != "undefined";
   if (!seeking) {
    position = stream.position;
   } else if (!stream.seekable) {
@@ -2672,7 +2652,7 @@ var FS = {
   if (!seeking) stream.position += bytesRead;
   return bytesRead;
  },
- write: function(stream, buffer, offset, length, position, canOwn) {
+ write: (stream, buffer, offset, length, position, canOwn) => {
   if (length < 0 || position < 0) {
    throw new FS.ErrnoError(28);
   }
@@ -2691,7 +2671,7 @@ var FS = {
   if (stream.seekable && stream.flags & 1024) {
    FS.llseek(stream, 0, 2);
   }
-  var seeking = typeof position !== "undefined";
+  var seeking = typeof position != "undefined";
   if (!seeking) {
    position = stream.position;
   } else if (!stream.seekable) {
@@ -2701,7 +2681,7 @@ var FS = {
   if (!seeking) stream.position += bytesWritten;
   return bytesWritten;
  },
- allocate: function(stream, offset, length) {
+ allocate: (stream, offset, length) => {
   if (FS.isClosed(stream)) {
    throw new FS.ErrnoError(8);
   }
@@ -2719,7 +2699,7 @@ var FS = {
   }
   stream.stream_ops.allocate(stream, offset, length);
  },
- mmap: function(stream, address, length, position, prot, flags) {
+ mmap: (stream, address, length, position, prot, flags) => {
   if ((prot & 2) !== 0 && (flags & 2) === 0 && (stream.flags & 2097155) !== 2) {
    throw new FS.ErrnoError(2);
   }
@@ -2731,22 +2711,20 @@ var FS = {
   }
   return stream.stream_ops.mmap(stream, address, length, position, prot, flags);
  },
- msync: function(stream, buffer, offset, length, mmapFlags) {
+ msync: (stream, buffer, offset, length, mmapFlags) => {
   if (!stream || !stream.stream_ops.msync) {
    return 0;
   }
   return stream.stream_ops.msync(stream, buffer, offset, length, mmapFlags);
  },
- munmap: function(stream) {
-  return 0;
- },
- ioctl: function(stream, cmd, arg) {
+ munmap: stream => 0,
+ ioctl: (stream, cmd, arg) => {
   if (!stream.stream_ops.ioctl) {
    throw new FS.ErrnoError(59);
   }
   return stream.stream_ops.ioctl(stream, cmd, arg);
  },
- readFile: function(path, opts = {}) {
+ readFile: (path, opts = {}) => {
   opts.flags = opts.flags || 0;
   opts.encoding = opts.encoding || "binary";
   if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
@@ -2766,10 +2744,10 @@ var FS = {
   FS.close(stream);
   return ret;
  },
- writeFile: function(path, data, opts = {}) {
+ writeFile: (path, data, opts = {}) => {
   opts.flags = opts.flags || 577;
   var stream = FS.open(path, opts.flags, opts.mode);
-  if (typeof data === "string") {
+  if (typeof data == "string") {
    var buf = new Uint8Array(lengthBytesUTF8(data) + 1);
    var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
    FS.write(stream, buf, 0, actualNumBytes, undefined, opts.canOwn);
@@ -2780,10 +2758,8 @@ var FS = {
   }
   FS.close(stream);
  },
- cwd: function() {
-  return FS.currentPath;
- },
- chdir: function(path) {
+ cwd: () => FS.currentPath,
+ chdir: path => {
   var lookup = FS.lookupPath(path, {
    follow: true
   });
@@ -2799,20 +2775,16 @@ var FS = {
   }
   FS.currentPath = lookup.path;
  },
- createDefaultDirectories: function() {
+ createDefaultDirectories: () => {
   FS.mkdir("/tmp");
   FS.mkdir("/home");
   FS.mkdir("/home/web_user");
  },
- createDefaultDevices: function() {
+ createDefaultDevices: () => {
   FS.mkdir("/dev");
   FS.registerDevice(FS.makedev(1, 3), {
-   read: function() {
-    return 0;
-   },
-   write: function(stream, buffer, offset, length, pos) {
-    return length;
-   }
+   read: () => 0,
+   write: (stream, buffer, offset, length, pos) => length
   });
   FS.mkdev("/dev/null", FS.makedev(1, 3));
   TTY.register(FS.makedev(5, 0), TTY.default_tty_ops);
@@ -2825,15 +2797,15 @@ var FS = {
   FS.mkdir("/dev/shm");
   FS.mkdir("/dev/shm/tmp");
  },
- createSpecialDirectories: function() {
+ createSpecialDirectories: () => {
   FS.mkdir("/proc");
   var proc_self = FS.mkdir("/proc/self");
   FS.mkdir("/proc/self/fd");
   FS.mount({
-   mount: function() {
+   mount: () => {
     var node = FS.createNode(proc_self, "fd", 16384 | 511, 73);
     node.node_ops = {
-     lookup: function(parent, name) {
+     lookup: (parent, name) => {
       var fd = +name;
       var stream = FS.getStream(fd);
       if (!stream) throw new FS.ErrnoError(8);
@@ -2843,9 +2815,7 @@ var FS = {
         mountpoint: "fake"
        },
        node_ops: {
-        readlink: function() {
-         return stream.path;
-        }
+        readlink: () => stream.path
        }
       };
       ret.parent = ret;
@@ -2856,7 +2826,7 @@ var FS = {
    }
   }, {}, "/proc/self/fd");
  },
- createStandardStreams: function() {
+ createStandardStreams: () => {
   if (Module["stdin"]) {
    FS.createDevice("/dev", "stdin", Module["stdin"]);
   } else {
@@ -2879,7 +2849,7 @@ var FS = {
   assert(stdout.fd === 1, "invalid handle for stdout (" + stdout.fd + ")");
   assert(stderr.fd === 2, "invalid handle for stderr (" + stderr.fd + ")");
  },
- ensureErrnoError: function() {
+ ensureErrnoError: () => {
   if (FS.ErrnoError) return;
   FS.ErrnoError = function ErrnoError(errno, node) {
    this.node = node;
@@ -2904,12 +2874,12 @@ var FS = {
   };
   FS.ErrnoError.prototype = new Error();
   FS.ErrnoError.prototype.constructor = FS.ErrnoError;
-  [ 44 ].forEach(function(code) {
+  [ 44 ].forEach(code => {
    FS.genericErrors[code] = new FS.ErrnoError(code);
    FS.genericErrors[code].stack = "<generic error, no stack>";
   });
  },
- staticInit: function() {
+ staticInit: () => {
   FS.ensureErrnoError();
   FS.nameTable = new Array(4096);
   FS.mount(MEMFS, {}, "/");
@@ -2920,7 +2890,7 @@ var FS = {
    "MEMFS": MEMFS
   };
  },
- init: function(input, output, error) {
+ init: (input, output, error) => {
   assert(!FS.init.initialized, "FS.init was previously called. If you want to initialize later with custom parameters, remove any earlier calls (note that one is automatically added to the generated code)");
   FS.init.initialized = true;
   FS.ensureErrnoError();
@@ -2929,9 +2899,9 @@ var FS = {
   Module["stderr"] = error || Module["stderr"];
   FS.createStandardStreams();
  },
- quit: function() {
+ quit: () => {
   FS.init.initialized = false;
-  _fflush(0);
+  ___stdio_exit();
   for (var i = 0; i < FS.streams.length; i++) {
    var stream = FS.streams[i];
    if (!stream) {
@@ -2940,13 +2910,13 @@ var FS = {
    FS.close(stream);
   }
  },
- getMode: function(canRead, canWrite) {
+ getMode: (canRead, canWrite) => {
   var mode = 0;
   if (canRead) mode |= 292 | 73;
   if (canWrite) mode |= 146;
   return mode;
  },
- findObject: function(path, dontResolveLastLink) {
+ findObject: (path, dontResolveLastLink) => {
   var ret = FS.analyzePath(path, dontResolveLastLink);
   if (ret.exists) {
    return ret.object;
@@ -2954,7 +2924,7 @@ var FS = {
    return null;
   }
  },
- analyzePath: function(path, dontResolveLastLink) {
+ analyzePath: (path, dontResolveLastLink) => {
   try {
    var lookup = FS.lookupPath(path, {
     follow: !dontResolveLastLink
@@ -2993,8 +2963,8 @@ var FS = {
   }
   return ret;
  },
- createPath: function(parent, path, canRead, canWrite) {
-  parent = typeof parent === "string" ? parent : FS.getPath(parent);
+ createPath: (parent, path, canRead, canWrite) => {
+  parent = typeof parent == "string" ? parent : FS.getPath(parent);
   var parts = path.split("/").reverse();
   while (parts.length) {
    var part = parts.pop();
@@ -3007,17 +2977,21 @@ var FS = {
   }
   return current;
  },
- createFile: function(parent, name, properties, canRead, canWrite) {
-  var path = PATH.join2(typeof parent === "string" ? parent : FS.getPath(parent), name);
+ createFile: (parent, name, properties, canRead, canWrite) => {
+  var path = PATH.join2(typeof parent == "string" ? parent : FS.getPath(parent), name);
   var mode = FS.getMode(canRead, canWrite);
   return FS.create(path, mode);
  },
- createDataFile: function(parent, name, data, canRead, canWrite, canOwn) {
-  var path = name ? PATH.join2(typeof parent === "string" ? parent : FS.getPath(parent), name) : parent;
+ createDataFile: (parent, name, data, canRead, canWrite, canOwn) => {
+  var path = name;
+  if (parent) {
+   parent = typeof parent == "string" ? parent : FS.getPath(parent);
+   path = name ? PATH.join2(parent, name) : parent;
+  }
   var mode = FS.getMode(canRead, canWrite);
   var node = FS.create(path, mode);
   if (data) {
-   if (typeof data === "string") {
+   if (typeof data == "string") {
     var arr = new Array(data.length);
     for (var i = 0, len = data.length; i < len; ++i) arr[i] = data.charCodeAt(i);
     data = arr;
@@ -3030,21 +3004,21 @@ var FS = {
   }
   return node;
  },
- createDevice: function(parent, name, input, output) {
-  var path = PATH.join2(typeof parent === "string" ? parent : FS.getPath(parent), name);
+ createDevice: (parent, name, input, output) => {
+  var path = PATH.join2(typeof parent == "string" ? parent : FS.getPath(parent), name);
   var mode = FS.getMode(!!input, !!output);
   if (!FS.createDevice.major) FS.createDevice.major = 64;
   var dev = FS.makedev(FS.createDevice.major++, 0);
   FS.registerDevice(dev, {
-   open: function(stream) {
+   open: stream => {
     stream.seekable = false;
    },
-   close: function(stream) {
+   close: stream => {
     if (output && output.buffer && output.buffer.length) {
      output(10);
     }
    },
-   read: function(stream, buffer, offset, length, pos) {
+   read: (stream, buffer, offset, length, pos) => {
     var bytesRead = 0;
     for (var i = 0; i < length; i++) {
      var result;
@@ -3065,7 +3039,7 @@ var FS = {
     }
     return bytesRead;
    },
-   write: function(stream, buffer, offset, length, pos) {
+   write: (stream, buffer, offset, length, pos) => {
     for (var i = 0; i < length; i++) {
      try {
       output(buffer[offset + i]);
@@ -3081,9 +3055,9 @@ var FS = {
   });
   return FS.mkdev(path, mode, dev);
  },
- forceLoadFile: function(obj) {
+ forceLoadFile: obj => {
   if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true;
-  if (typeof XMLHttpRequest !== "undefined") {
+  if (typeof XMLHttpRequest != "undefined") {
    throw new Error("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
   } else if (read_) {
    try {
@@ -3096,7 +3070,7 @@ var FS = {
    throw new Error("Cannot load without read() or XMLHttpRequest.");
   }
  },
- createLazyFile: function(parent, name, url, canRead, canWrite) {
+ createLazyFile: (parent, name, url, canRead, canWrite) => {
   function LazyUint8Array() {
    this.lengthKnown = false;
    this.chunks = [];
@@ -3123,13 +3097,13 @@ var FS = {
    var usesGzip = (header = xhr.getResponseHeader("Content-Encoding")) && header === "gzip";
    var chunkSize = 1024 * 1024;
    if (!hasByteServing) chunkSize = datalength;
-   var doXHR = function(from, to) {
+   var doXHR = (from, to) => {
     if (from > to) throw new Error("invalid range (" + from + ", " + to + ") or no bytes requested!");
     if (to > datalength - 1) throw new Error("only " + datalength + " bytes available! programmer error!");
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, false);
     if (datalength !== chunkSize) xhr.setRequestHeader("Range", "bytes=" + from + "-" + to);
-    if (typeof Uint8Array != "undefined") xhr.responseType = "arraybuffer";
+    xhr.responseType = "arraybuffer";
     if (xhr.overrideMimeType) {
      xhr.overrideMimeType("text/plain; charset=x-user-defined");
     }
@@ -3142,14 +3116,14 @@ var FS = {
     }
    };
    var lazyArray = this;
-   lazyArray.setDataGetter(function(chunkNum) {
+   lazyArray.setDataGetter(chunkNum => {
     var start = chunkNum * chunkSize;
     var end = (chunkNum + 1) * chunkSize - 1;
     end = Math.min(end, datalength - 1);
-    if (typeof lazyArray.chunks[chunkNum] === "undefined") {
+    if (typeof lazyArray.chunks[chunkNum] == "undefined") {
      lazyArray.chunks[chunkNum] = doXHR(start, end);
     }
-    if (typeof lazyArray.chunks[chunkNum] === "undefined") throw new Error("doXHR failed!");
+    if (typeof lazyArray.chunks[chunkNum] == "undefined") throw new Error("doXHR failed!");
     return lazyArray.chunks[chunkNum];
    });
    if (usesGzip || !datalength) {
@@ -3162,7 +3136,7 @@ var FS = {
    this._chunkSize = chunkSize;
    this.lengthKnown = true;
   };
-  if (typeof XMLHttpRequest !== "undefined") {
+  if (typeof XMLHttpRequest != "undefined") {
    if (!ENVIRONMENT_IS_WORKER) throw "Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc";
    var lazyArray = new LazyUint8Array();
    Object.defineProperties(lazyArray, {
@@ -3209,14 +3183,14 @@ var FS = {
   });
   var stream_ops = {};
   var keys = Object.keys(node.stream_ops);
-  keys.forEach(function(key) {
+  keys.forEach(key => {
    var fn = node.stream_ops[key];
    stream_ops[key] = function forceLoadLazyFile() {
     FS.forceLoadFile(node);
     return fn.apply(null, arguments);
    };
   });
-  stream_ops.read = function stream_ops_read(stream, buffer, offset, length, position) {
+  stream_ops.read = ((stream, buffer, offset, length, position) => {
    FS.forceLoadFile(node);
    var contents = stream.node.contents;
    if (position >= contents.length) return 0;
@@ -3232,12 +3206,11 @@ var FS = {
     }
    }
    return size;
-  };
+  });
   node.stream_ops = stream_ops;
   return node;
  },
- createPreloadedFile: function(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) {
-  Browser.init();
+ createPreloadedFile: (parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) => {
   var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
   var dep = getUniqueRunDependency("cp " + fullname);
   function processData(byteArray) {
@@ -3249,51 +3222,44 @@ var FS = {
     if (onload) onload();
     removeRunDependency(dep);
    }
-   var handled = false;
-   Module["preloadPlugins"].forEach(function(plugin) {
-    if (handled) return;
-    if (plugin["canHandle"](fullname)) {
-     plugin["handle"](byteArray, fullname, finish, function() {
-      if (onerror) onerror();
-      removeRunDependency(dep);
-     });
-     handled = true;
-    }
-   });
-   if (!handled) finish(byteArray);
+   if (Browser.handledByPreloadPlugin(byteArray, fullname, finish, () => {
+    if (onerror) onerror();
+    removeRunDependency(dep);
+   })) {
+    return;
+   }
+   finish(byteArray);
   }
   addRunDependency(dep);
   if (typeof url == "string") {
-   asyncLoad(url, function(byteArray) {
-    processData(byteArray);
-   }, onerror);
+   asyncLoad(url, byteArray => processData(byteArray), onerror);
   } else {
    processData(url);
   }
  },
- indexedDB: function() {
+ indexedDB: () => {
   return window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
  },
- DB_NAME: function() {
+ DB_NAME: () => {
   return "EM_FS_" + window.location.pathname;
  },
  DB_VERSION: 20,
  DB_STORE_NAME: "FILE_DATA",
- saveFilesToDB: function(paths, onload, onerror) {
-  onload = onload || function() {};
-  onerror = onerror || function() {};
+ saveFilesToDB: (paths, onload, onerror) => {
+  onload = onload || (() => {});
+  onerror = onerror || (() => {});
   var indexedDB = FS.indexedDB();
   try {
    var openRequest = indexedDB.open(FS.DB_NAME(), FS.DB_VERSION);
   } catch (e) {
    return onerror(e);
   }
-  openRequest.onupgradeneeded = function openRequest_onupgradeneeded() {
+  openRequest.onupgradeneeded = (() => {
    out("creating db");
    var db = openRequest.result;
    db.createObjectStore(FS.DB_STORE_NAME);
-  };
-  openRequest.onsuccess = function openRequest_onsuccess() {
+  });
+  openRequest.onsuccess = (() => {
    var db = openRequest.result;
    var transaction = db.transaction([ FS.DB_STORE_NAME ], "readwrite");
    var files = transaction.objectStore(FS.DB_STORE_NAME);
@@ -3301,24 +3267,24 @@ var FS = {
    function finish() {
     if (fail == 0) onload(); else onerror();
    }
-   paths.forEach(function(path) {
+   paths.forEach(path => {
     var putRequest = files.put(FS.analyzePath(path).object.contents, path);
-    putRequest.onsuccess = function putRequest_onsuccess() {
+    putRequest.onsuccess = (() => {
      ok++;
      if (ok + fail == total) finish();
-    };
-    putRequest.onerror = function putRequest_onerror() {
+    });
+    putRequest.onerror = (() => {
      fail++;
      if (ok + fail == total) finish();
-    };
+    });
    });
    transaction.onerror = onerror;
-  };
+  });
   openRequest.onerror = onerror;
  },
- loadFilesFromDB: function(paths, onload, onerror) {
-  onload = onload || function() {};
-  onerror = onerror || function() {};
+ loadFilesFromDB: (paths, onload, onerror) => {
+  onload = onload || (() => {});
+  onerror = onerror || (() => {});
   var indexedDB = FS.indexedDB();
   try {
    var openRequest = indexedDB.open(FS.DB_NAME(), FS.DB_VERSION);
@@ -3326,7 +3292,7 @@ var FS = {
    return onerror(e);
   }
   openRequest.onupgradeneeded = onerror;
-  openRequest.onsuccess = function openRequest_onsuccess() {
+  openRequest.onsuccess = (() => {
    var db = openRequest.result;
    try {
     var transaction = db.transaction([ FS.DB_STORE_NAME ], "readonly");
@@ -3339,47 +3305,46 @@ var FS = {
    function finish() {
     if (fail == 0) onload(); else onerror();
    }
-   paths.forEach(function(path) {
+   paths.forEach(path => {
     var getRequest = files.get(path);
-    getRequest.onsuccess = function getRequest_onsuccess() {
+    getRequest.onsuccess = (() => {
      if (FS.analyzePath(path).exists) {
       FS.unlink(path);
      }
      FS.createDataFile(PATH.dirname(path), PATH.basename(path), getRequest.result, true, true, true);
      ok++;
      if (ok + fail == total) finish();
-    };
-    getRequest.onerror = function getRequest_onerror() {
+    });
+    getRequest.onerror = (() => {
      fail++;
      if (ok + fail == total) finish();
-    };
+    });
    });
    transaction.onerror = onerror;
-  };
+  });
   openRequest.onerror = onerror;
  },
- absolutePath: function() {
+ absolutePath: () => {
   abort("FS.absolutePath has been removed; use PATH_FS.resolve instead");
  },
- createFolder: function() {
+ createFolder: () => {
   abort("FS.createFolder has been removed; use FS.mkdir instead");
  },
- createLink: function() {
+ createLink: () => {
   abort("FS.createLink has been removed; use FS.symlink instead");
  },
- joinPath: function() {
+ joinPath: () => {
   abort("FS.joinPath has been removed; use PATH.join instead");
  },
- mmapAlloc: function() {
+ mmapAlloc: () => {
   abort("FS.mmapAlloc has been replaced by the top level function mmapAlloc");
  },
- standardizePath: function() {
+ standardizePath: () => {
   abort("FS.standardizePath has been removed; use PATH.normalize instead");
  }
 };
 
 var SYSCALLS = {
- mappings: {},
  DEFAULT_POLLMASK: 5,
  calculateAt: function(dirfd, path, allowEmpty) {
   if (path[0] === "/") {
@@ -3593,7 +3558,7 @@ function ___syscall_fcntl64(fd, cmd, varargs) {
    }
   }
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return -e.errno;
  }
 }
@@ -3657,7 +3622,7 @@ function ___syscall_ioctl(fd, op, varargs) {
    abort("bad ioctl syscall " + op);
   }
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return -e.errno;
  }
 }
@@ -3670,7 +3635,7 @@ function ___syscall_open(path, flags, varargs) {
   var stream = FS.open(pathname, flags, mode);
   return stream.fd;
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return -e.errno;
  }
 }
@@ -3686,6 +3651,10 @@ function _clock() {
 
 function _emscripten_memcpy_big(dest, src, num) {
  HEAPU8.copyWithin(dest, src, src + num);
+}
+
+function _emscripten_get_heap_max() {
+ return 2147483648;
 }
 
 var _emscripten_get_now;
@@ -3706,7 +3675,7 @@ function _emscripten_resize_heap(requestedSize) {
  var oldSize = HEAPU8.length;
  requestedSize = requestedSize >>> 0;
  assert(requestedSize > oldSize);
- var maxHeapSize = 2147483648;
+ var maxHeapSize = _emscripten_get_heap_max();
  if (requestedSize > maxHeapSize) {
   err("Cannot enlarge memory, asked to go up to " + requestedSize + " bytes, but the limit is " + maxHeapSize + " bytes!");
   return false;
@@ -3733,7 +3702,7 @@ function _fd_close(fd) {
   FS.close(stream);
   return 0;
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return e.errno;
  }
 }
@@ -3745,7 +3714,7 @@ function _fd_read(fd, iov, iovcnt, pnum) {
   HEAP32[pnum >> 2] = num;
   return 0;
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return e.errno;
  }
 }
@@ -3765,7 +3734,7 @@ function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
   if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null;
   return 0;
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return e.errno;
  }
 }
@@ -3777,7 +3746,7 @@ function _fd_write(fd, iov, iovcnt, pnum) {
   HEAP32[pnum >> 2] = num;
   return 0;
  } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) throw e;
+  if (typeof FS == "undefined" || !(e instanceof FS.ErrnoError)) throw e;
   return e.errno;
  }
 }
@@ -3984,7 +3953,7 @@ function intArrayFromString(stringy, dontAddNull, length) {
  return u8array;
 }
 
-var decodeBase64 = typeof atob === "function" ? atob : function(input) {
+var decodeBase64 = typeof atob == "function" ? atob : function(input) {
  var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
  var output = "";
  var chr1, chr2, chr3;
@@ -4057,7 +4026,7 @@ var _main = Module["_main"] = createExportWrapper("main");
 
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
-var _fflush = Module["_fflush"] = createExportWrapper("fflush");
+var ___stdio_exit = Module["___stdio_exit"] = createExportWrapper("__stdio_exit");
 
 var _emscripten_stack_init = Module["_emscripten_stack_init"] = function() {
  return (_emscripten_stack_init = Module["_emscripten_stack_init"] = Module["asm"]["emscripten_stack_init"]).apply(null, arguments);
@@ -4185,8 +4154,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "zeroMemory")) Module["zeroMemory"]
 
 if (!Object.getOwnPropertyDescriptor(Module, "stringToNewUTF8")) Module["stringToNewUTF8"] = (() => abort("'stringToNewUTF8' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
-if (!Object.getOwnPropertyDescriptor(Module, "setFileTime")) Module["setFileTime"] = (() => abort("'setFileTime' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
-
 if (!Object.getOwnPropertyDescriptor(Module, "emscripten_realloc_buffer")) Module["emscripten_realloc_buffer"] = (() => abort("'emscripten_realloc_buffer' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
 if (!Object.getOwnPropertyDescriptor(Module, "ENV")) Module["ENV"] = (() => abort("'ENV' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
@@ -4214,8 +4181,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "writeSockaddr")) Module["writeSock
 if (!Object.getOwnPropertyDescriptor(Module, "DNS")) Module["DNS"] = (() => abort("'DNS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
 if (!Object.getOwnPropertyDescriptor(Module, "getHostByName")) Module["getHostByName"] = (() => abort("'getHostByName' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
-
-if (!Object.getOwnPropertyDescriptor(Module, "GAI_ERRNO_MESSAGES")) Module["GAI_ERRNO_MESSAGES"] = (() => abort("'GAI_ERRNO_MESSAGES' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
 if (!Object.getOwnPropertyDescriptor(Module, "Protocols")) Module["Protocols"] = (() => abort("'Protocols' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
@@ -4296,10 +4261,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "PATH")) Module["PATH"] = (() => ab
 if (!Object.getOwnPropertyDescriptor(Module, "PATH_FS")) Module["PATH_FS"] = (() => abort("'PATH_FS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
 if (!Object.getOwnPropertyDescriptor(Module, "SYSCALLS")) Module["SYSCALLS"] = (() => abort("'SYSCALLS' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
-
-if (!Object.getOwnPropertyDescriptor(Module, "syscallMmap2")) Module["syscallMmap2"] = (() => abort("'syscallMmap2' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
-
-if (!Object.getOwnPropertyDescriptor(Module, "syscallMunmap")) Module["syscallMunmap"] = (() => abort("'syscallMunmap' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
 if (!Object.getOwnPropertyDescriptor(Module, "getSocketFromFD")) Module["getSocketFromFD"] = (() => abort("'getSocketFromFD' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)"));
 
@@ -4647,7 +4608,7 @@ function checkUnflushedContent() {
   has = true;
  });
  try {
-  _fflush(0);
+  ___stdio_exit();
   [ "stdout", "stderr" ].forEach(function(name) {
    var info = FS.analyzePath("/dev/" + name);
    if (!info) return;
@@ -4668,7 +4629,9 @@ function checkUnflushedContent() {
 
 function exit(status, implicit) {
  EXITSTATUS = status;
- checkUnflushedContent();
+ if (!runtimeKeepaliveCounter) {
+  checkUnflushedContent();
+ }
  if (keepRuntimeAlive()) {
   if (!implicit) {
    var msg = "program exited (with status: " + status + "), but EXIT_RUNTIME is not set, so halting execution but not exiting the runtime or preventing further async execution (build with EXIT_RUNTIME=1, if you want a true shutdown)";
