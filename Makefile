@@ -11,16 +11,17 @@ CXX=em++
 DEBUG_LEVEL = -g2
 CXX_STANDARD = -std=c++11
 EXTRA_CCFLAGS = 
-CXXFLAGS = -O2 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS)
-PREDCXXFLAGS = -O0 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS)
+CXXFLAGS = -O2 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS) -MMD -MP
+PREDCXXFLAGS = -O0 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS) -MMD -MP
 
 # Directories
 BUILD = build
 TETGEN = tetgen
 
-# Source Files
-TETGEN_SOURCES = $(TETGEN)/predicates.cxx $(TETGEN)/tetgen.cxx
-TETGEN_OBJECTS = $(BUILD)/predicates.o $(BUILD)/libtetgen.o
+# Source and Object Files
+TETGEN_SOURCES = $(wildcard $(TETGEN)/*.cxx)
+TETGEN_OBJECTS = $(patsubst $(TETGEN)/%.cxx,$(BUILD)/%.o,$(TETGEN_SOURCES))
+
 MAIN_SRC = main.cxx
 
 # Output
@@ -50,13 +51,9 @@ all: babylon2tet
 $(BUILD):
 	mkdir -p $(BUILD)
 
-# Compile predicates.o
-$(BUILD)/predicates.o: $(TETGEN)/predicates.cxx | $(BUILD)
-	$(CXX) $(PREDCXXFLAGS) -DSELF_CHECK -DNDEBUG -DTETLIBRARY -c $(TETGEN)/predicates.cxx -o $(BUILD)/predicates.o
-
-# Compile tetgen.o
-$(BUILD)/libtetgen.o: $(TETGEN)/tetgen.cxx | $(BUILD)
-	$(CXX) $(CXXFLAGS) -DSELF_CHECK -DNDEBUG -DTETLIBRARY -c $(TETGEN)/tetgen.cxx -o $(BUILD)/libtetgen.o
+# Pattern Rule for Compiling TetGen Sources
+$(BUILD)/%.o: $(TETGEN)/%.cxx | $(BUILD)
+	$(CXX) $(CXXFLAGS) -DSELF_CHECK -DNDEBUG -DTETLIBRARY -c $< -o $@
 
 # Link the final JavaScript module
 babylon2tet: $(TETGEN_OBJECTS) $(MAIN_SRC)
@@ -65,3 +62,6 @@ babylon2tet: $(TETGEN_OBJECTS) $(MAIN_SRC)
 # Clean build artifacts
 clean:
 	rm -rf $(BUILD) $(TARGET)
+
+# Include dependency files
+-include $(TETGEN_OBJECTS:.o=.d)
