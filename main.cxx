@@ -9,127 +9,142 @@
 #include "tetgen/tetgen.h"
 #include <emscripten.h>
 
-EMSCRIPTEN_KEEPALIVE
-extern "C" int babylon2tetgen(
-    uint32_t  bnumpositions,                     //  data from babylon
-    double    bpositions[],                      //
-    uint32_t  bnumindices,                       // 
-    uint32_t  bindices[],                        //
-    uint32_t* numVerticesOut,                    //  data to babylon
-    double    verticesOut[],                     //
-    uint64_t* numTetrahedraOut,                  //
-    uint32_t  tetrahedraOut[])                   //
-{
+extern "C" {
 
-    // debug inputs to make sure transfer
-    // of data from BabylonJS is OK
+// Ensure the function is exported and kept alive for Emscripten
+EMSCRIPTEN_KEEPALIVE
+int babylon2tetgen(
+    uint32_t  bnumpositions,     // Number of points from BabylonJS
+    double    bpositions[],      // Array of coordinates (x, y, z) [size: bnumpositions * 3]
+    uint32_t  bnumindices,       // Number of indices (should be multiple of 3 for facets)
+    uint32_t  bindices[],        // Array of indices [size: bnumindices]
+    uint32_t* numVerticesOut,    // Output: number of vertices
+    double    verticesOut[],     // Output: array of vertex coordinates [size: out.numberofpoints * 3]
+    uint64_t* numTetrahedraOut,  // Output: number of tetrahedra
+    uint32_t  tetrahedraOut[]    // Output: array of tetrahedra indices [size: out.numberoftetrahedra * 4]
+)
+{
+    // Debug inputs to ensure data is correctly received from BabylonJS
     printf("startBabylon2Tetgen!\n");
-    printf("numpos=%d\n",bnumpositions);
-    printf("numind=%d\n",bnumindices);
-    // check input counts
-    // for(int i=0;i<10;i++) std::cout << std::setprecision (17) << "Pos:" << bpositions[i] << std::endl;
-    // for(int i=0;i<10;i++) std::cout << std::setprecision (17) << "Indices:" << bindices[i] << std::endl;
-    
+    printf("Number of points: %u\n", bnumpositions);
+    printf("Number of indices: %u\n", bnumindices);
+
+    // Initialize TetGen input and output structures
     tetgenio in, out;
 
+    //////////////////////////////
+    // TetGen options setup
+    //////////////////////////////
+    tetgenbehavior b;
+    b.plc = 1;                 // Use PLC (Piecewise Linear Complex) input
+    b.quality = 1;             // Enable quality mesh generation
+    b.minratio = 1.1;          // Minimum ratio constraint
+    b.mindihedral = 10.0;      // Minimum dihedral angle in degrees
+    b.verbose = 2;             // Verbosity level
+    b.nobisect = 1;            // Disable bisection
+    b.steinerleft = 100000;    // Maximum number of Steiner points
+    b.order = 1;               // Order of the mesh (1 for linear)
+    b.maxvolume = 0.1;         // Maximum volume constraint for tetrahedra
+    b.object = tetgenbehavior::POLY; // Input is a polyhedron
 
     //////////////////////////////
-    // tetgen options begin
-    /////////////////////////////
-    tetgenbehavior b;
-	b.plc=1;
-	b.quality=1;
-	b.minratio=1.1;
-	b.mindihedral=10.0;
-	b.verbose=2;
-	b.nobisect=1;
-	b.steinerleft=100000;
-    b.order=1;
-	b.maxvolume=0.1;
-    b.object = tetgenbehavior::POLY;
-	
-    ////////////////////////////
-    // tetgen options end
-    ////////////////////////////
+    // Preparing TetGen input
+    //////////////////////////////
 
-
-    // initialize in with BABYLON counts
+    // Set the number of points
     in.numberofpoints = bnumpositions;
-    in.pointlist = new REAL[bnumpositions * 3];
-    in.numberoffacets = bnumindices/3;
+    
+    // Allocate memory for point coordinates (x, y, z)
+    in.pointlist = new REAL[in.numberofpoints * 3];
+    
+    // Copy the input positions to TetGen's point list
+    // Assuming bpositions has 3 * bnumpositions elements
+    memcpy(in.pointlist, bpositions, sizeof(REAL) * in.numberofpoints * 3);
+
+    // Set the number of facets (each facet is a triangle, hence indices are in multiples of 3)
+    in.numberoffacets = bnumindices / 3;
+    
+    // Allocate memory for facets
     in.facetlist = new tetgenio::facet[in.numberoffacets];
     in.facetmarkerlist = new int[in.numberoffacets];
 
-    // copy BABYLON pointlist to in
-    memcpy(in.pointlist, bpositions, sizeof(REAL) * bnumpositions);
-
-    uint64_t numfacets = in.numberoffacets;
-    for(int i = 0; i < numfacets; i++) {
-      tetgenio::facet* f = &in.facetlist[i];
-      f->holelist = (REAL*)NULL;
-      f->numberofholes = 0;
-      f->numberofpolygons = 1;
-      f->polygonlist = new tetgenio::polygon[f->numberofpolygons];
-      tetgenio::polygon *p = &f->polygonlist[0];
-      p->numberofvertices = 3;
-      p->vertexlist = new int[p->numberofvertices];
-      p->vertexlist[0] = static_cast<int>(bindices[i * 3 + 0]);
-      p->vertexlist[1] = static_cast<int>(bindices[i * 3 + 1]);
-      p->vertexlist[2] = static_cast<int>(bindices[i * 3 + 2]);
-      in.facetmarkerlist[i] = 0;
+    // Populate the facets
+    for(uint32_t i = 0; i < in.numberoffacets; i++) {
+        tetgenio::facet* f = &in.facetlist[i];
+        f->holelist = nullptr;
+        f->numberofholes = 0;
+        f->numberofpolygons = 1;
+        f->polygonlist = new tetgenio::polygon[1];
+        
+        tetgenio::polygon *p = &f->polygonlist[0];
+        p->numberofvertices = 3;
+        p->vertexlist = new int[3];
+        p->vertexlist[0] = static_cast<int>(bindices[i * 3 + 0]);
+        p->vertexlist[1] = static_cast<int>(bindices[i * 3 + 1]);
+        p->vertexlist[2] = static_cast<int>(bindices[i * 3 + 2]);
+        
+        // Optionally, set facet markers if needed
+        in.facetmarkerlist[i] = 0; // Example marker
     }
 
-    // printf("Writing to files...\n");
-    // char out_name[] = "debug_in_";
-    // in.save_nodes(out_name);
-    // in.save_poly(out_name);
-    // in.save_elements(out_name);
-    
-    ///////////////////////////////////////////////////////////////////
+    // Optional: Save input for debugging
+    // in.save_nodes("debug_in.node");
+    // in.save_poly("debug_in.poly");
 
-    printf("tetrahedralizeStart!\n");
+    //////////////////////////////
+    // TetGen Tetrahedralization
+    //////////////////////////////
+    printf("Starting tetrahedralization...\n");
     tetrahedralize(&b, &in, &out);
+    printf("Tetrahedralization completed.\n");
 
-    ////////////////////////////////////////////////////////////////////
+    //////////////////////////////
+    // Preparing Outputs
+    //////////////////////////////
 
-	
-
-    for(int i=0; i < 3*out.numberofpoints; i++){
-  	    verticesOut[i]   = out.pointlist[i];
+    // Copy the generated vertices to the output array
+    // Ensure that verticesOut has enough space: out.numberofpoints * 3
+    for(uint64_t i = 0; i < (uint64_t)(3) * out.numberofpoints; i++) {
+        verticesOut[i] = out.pointlist[i];
     }
     *numVerticesOut = out.numberofpoints;
 
-    for(int i=0; i < 4*out.numberoftetrahedra; i++){
-  	    tetrahedraOut[i] = out.tetrahedronlist[i];
+    // Copy the generated tetrahedra to the output array
+    // Ensure that tetrahedraOut has enough space: out.numberoftetrahedra * 4
+    for(uint64_t i = 0; i < (uint64_t)(4) * out.numberoftetrahedra; i++) {
+        tetrahedraOut[i] = out.tetrahedronlist[i];
     }
     *numTetrahedraOut = out.numberoftetrahedra;
 
-    //printf("Debug Outputs\n");
-    //printf("pts:%d dim:%d ptatrib:%d ptsml:%d\n", out.numberofpoints, out.mesh_dim, out.numberofpointattributes, out.pointmarkerlist != NULL ? 1 : 0);
-    //printf("tets:%d  corners:%d  tetatrib:%d\n", out.numberoftetrahedra, out.numberofcorners, out.numberoftetrahedronattributes);
-	//printf("tris:%d trisml:%d\n", out.numberoftrifaces, out.trifacemarkerlist != NULL ? 1 : 0);
-    //printf("edges:%d  edgesml:%d\n", out.numberofedges, out.edgemarkerlist != NULL ? 1 : 0);
-    //printf("first pts: %.16g  %.16g  %.16g\n", out.pointlist[0], out.pointlist[1], out.pointlist[2]);
-    //printf("first tet: todo \n");
-	
+    //////////////////////////////
+    // Cleaning Up
+    //////////////////////////////
+
+    // Free allocated memory for input
     delete[] in.pointlist;
     delete[] in.facetmarkerlist;
-       for (int i = 0; i < numfacets; i++) {
-       tetgenio::facet* f = &in.facetlist[i];
-       delete[] f->polygonlist[0].vertexlist;
-       delete[] f->polygonlist;
-     }
+    for(uint32_t i = 0; i < in.numberoffacets; i++) {
+        tetgenio::facet* f = &in.facetlist[i];
+        for(int j = 0; j < f->numberofpolygons; j++) {
+            delete[] f->polygonlist[j].vertexlist;
+        }
+        delete[] f->polygonlist;
+    }
     delete[] in.facetlist;
 
-    printf("tetrahedralizeEnd!\n");
-	
+    // Optional: Free output memory if not needed
+    // out.deinitialize();
+
+    printf("Clean up completed.\n");
 
     return 0;
+}
 
 }
 
+// Optional: Keep the main function for debugging purposes
 EMSCRIPTEN_KEEPALIVE
 int main() {
-  printf("main!\n");
-  return 0;
+    printf("TetGen WebGPU Module Initialized!\n");
+    return 0;
 }
