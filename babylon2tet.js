@@ -1,4 +1,94 @@
-var Module = typeof Module != "undefined" ? Module : {};
+
+var createTetGenModule = (() => {
+  var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
+  
+  return (
+function(createTetGenModule) {
+  createTetGenModule = createTetGenModule || {};
+
+var Module = typeof createTetGenModule != "undefined" ? createTetGenModule : {};
+
+var readyPromiseResolve, readyPromiseReject;
+
+Module["ready"] = new Promise(function(resolve, reject) {
+ readyPromiseResolve = resolve;
+ readyPromiseReject = reject;
+});
+
+if (!Object.getOwnPropertyDescriptor(Module["ready"], "_main")) {
+ Object.defineProperty(Module["ready"], "_main", {
+  configurable: true,
+  get: function() {
+   abort("You are getting _main on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+ Object.defineProperty(Module["ready"], "_main", {
+  configurable: true,
+  set: function() {
+   abort("You are setting _main on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module["ready"], "_babylon2tetgen")) {
+ Object.defineProperty(Module["ready"], "_babylon2tetgen", {
+  configurable: true,
+  get: function() {
+   abort("You are getting _babylon2tetgen on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+ Object.defineProperty(Module["ready"], "_babylon2tetgen", {
+  configurable: true,
+  set: function() {
+   abort("You are setting _babylon2tetgen on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module["ready"], "___stdio_exit")) {
+ Object.defineProperty(Module["ready"], "___stdio_exit", {
+  configurable: true,
+  get: function() {
+   abort("You are getting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+ Object.defineProperty(Module["ready"], "___stdio_exit", {
+  configurable: true,
+  set: function() {
+   abort("You are setting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module["ready"], "___set_stack_limits")) {
+ Object.defineProperty(Module["ready"], "___set_stack_limits", {
+  configurable: true,
+  get: function() {
+   abort("You are getting ___set_stack_limits on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+ Object.defineProperty(Module["ready"], "___set_stack_limits", {
+  configurable: true,
+  set: function() {
+   abort("You are setting ___set_stack_limits on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+}
+
+if (!Object.getOwnPropertyDescriptor(Module["ready"], "onRuntimeInitialized")) {
+ Object.defineProperty(Module["ready"], "onRuntimeInitialized", {
+  configurable: true,
+  get: function() {
+   abort("You are getting onRuntimeInitialized on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+ Object.defineProperty(Module["ready"], "onRuntimeInitialized", {
+  configurable: true,
+  set: function() {
+   abort("You are setting onRuntimeInitialized on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js");
+  }
+ });
+}
 
 var moduleOverrides = Object.assign({}, Module);
 
@@ -82,6 +172,9 @@ if (ENVIRONMENT_IS_SHELL) {
   scriptDirectory = self.location.href;
  } else if (typeof document != "undefined" && document.currentScript) {
   scriptDirectory = document.currentScript.src;
+ }
+ if (_scriptDir) {
+  scriptDirectory = _scriptDir;
  }
  if (scriptDirectory.indexOf("blob:") !== 0) {
   scriptDirectory = scriptDirectory.substr(0, scriptDirectory.replace(/[?#].*/, "").lastIndexOf("/") + 1);
@@ -601,8 +694,6 @@ var __ATPRERUN__ = [];
 
 var __ATINIT__ = [];
 
-var __ATMAIN__ = [];
-
 var __ATPOSTRUN__ = [];
 
 var runtimeInitialized = false;
@@ -634,11 +725,6 @@ function initRuntime() {
  FS.ignorePermissions = false;
  TTY.init();
  callRuntimeCallbacks(__ATINIT__);
-}
-
-function preMain() {
- checkStackCookie();
- callRuntimeCallbacks(__ATMAIN__);
 }
 
 function exitRuntime() {
@@ -765,6 +851,7 @@ function abort(what) {
  ABORT = true;
  EXITSTATUS = 1;
  var e = new WebAssembly.RuntimeError(what);
+ readyPromiseReject(e);
  throw e;
 }
 
@@ -898,7 +985,7 @@ function createWasm() {
    return false;
   }
  }
- instantiateAsync();
+ instantiateAsync().catch(readyPromiseReject);
  return {};
 }
 
@@ -949,13 +1036,6 @@ function getWasmTableEntry(funcPtr) {
  }
  assert(wasmTable.get(funcPtr) == func, "JavaScript-side Wasm function table mirror is out of date!");
  return func;
-}
-
-function handleException(e) {
- if (e instanceof ExitStatus || e == "unwind") {
-  return EXITSTATUS;
- }
- quit_(1, e);
 }
 
 function jsStackTrace() {
@@ -4014,15 +4094,11 @@ var asm = createWasm();
 
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
 
-var _free = Module["_free"] = createExportWrapper("free");
-
 var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 
+var _free = Module["_free"] = createExportWrapper("free");
+
 var _babylon2tetgen = Module["_babylon2tetgen"] = createExportWrapper("babylon2tetgen");
-
-var ___original_main = Module["___original_main"] = createExportWrapper("__original_main");
-
-var _main = Module["_main"] = createExportWrapper("main");
 
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
@@ -4534,29 +4610,10 @@ function ExitStatus(status) {
  this.status = status;
 }
 
-var calledMain = false;
-
 dependenciesFulfilled = function runCaller() {
  if (!calledRun) run();
  if (!calledRun) dependenciesFulfilled = runCaller;
 };
-
-function callMain(args) {
- assert(runDependencies == 0, 'cannot call main when async dependencies remain! (listen on Module["onRuntimeInitialized"])');
- assert(__ATPRERUN__.length == 0, "cannot call main when preRun functions remain to be called");
- var entryFunction = Module["_main"];
- var argc = 0;
- var argv = 0;
- try {
-  var ret = entryFunction(argc, argv);
-  exit(ret, true);
-  return ret;
- } catch (e) {
-  return handleException(e);
- } finally {
-  calledMain = true;
- }
-}
 
 function stackCheckInit() {
  _emscripten_stack_init();
@@ -4579,9 +4636,9 @@ function run(args) {
   Module["calledRun"] = true;
   if (ABORT) return;
   initRuntime();
-  preMain();
+  readyPromiseResolve(Module);
   if (Module["onRuntimeInitialized"]) Module["onRuntimeInitialized"]();
-  if (shouldRunNow) callMain(args);
+  assert(!Module["_main"], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
   postRun();
  }
  if (Module["setStatus"]) {
@@ -4627,22 +4684,6 @@ function checkUnflushedContent() {
  }
 }
 
-function exit(status, implicit) {
- EXITSTATUS = status;
- if (!runtimeKeepaliveCounter) {
-  checkUnflushedContent();
- }
- if (keepRuntimeAlive()) {
-  if (!implicit) {
-   var msg = "program exited (with status: " + status + "), but EXIT_RUNTIME is not set, so halting execution but not exiting the runtime or preventing further async execution (build with EXIT_RUNTIME=1, if you want a true shutdown)";
-   err(msg);
-  }
- } else {
-  exitRuntime();
- }
- procExit(status);
-}
-
 function procExit(code) {
  EXITSTATUS = code;
  if (!keepRuntimeAlive()) {
@@ -4659,8 +4700,16 @@ if (Module["preInit"]) {
  }
 }
 
-var shouldRunNow = true;
-
-if (Module["noInitialRun"]) shouldRunNow = false;
-
 run();
+
+
+  return createTetGenModule.ready
+}
+);
+})();
+if (typeof exports === 'object' && typeof module === 'object')
+  module.exports = createTetGenModule;
+else if (typeof define === 'function' && define['amd'])
+  define([], function() { return createTetGenModule; });
+else if (typeof exports === 'object')
+  exports["createTetGenModule"] = createTetGenModule;

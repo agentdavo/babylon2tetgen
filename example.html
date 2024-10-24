@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8"/>
     <title>Babylon TetGen Integration</title>
 
     <style>
@@ -12,12 +12,25 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         #renderCanvas {
+            flex: 1;
             width: 100%;
             height: 100%;
             touch-action: none;
+        }
+
+        #log {
+            height: 200px;
+            overflow-y: scroll;
+            background-color: #f0f0f0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            border-top: 1px solid #ccc;
         }
     </style>
 
@@ -53,199 +66,71 @@
 
 <body>
     <canvas id="renderCanvas" touch-action="none"></canvas> <!-- touch-action="none" for best results from PEP -->
+    <pre id="log"></pre> <!-- Log Area -->
 
-    <!-- Load the Emscripten Module FIRST -->
+    <!-- Load the Emscripten Module AFTER BabylonJS Scripts -->
     <script src="babylon2tet.js"></script>
 
     <!-- Your Main JavaScript Code -->
     <script>
-        async function init() {
-            var canvas = document.getElementById("renderCanvas"); // Get the canvas element
-            var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+        // Function to append logs to the log area
+        function appendLog(message) {
+            const logElement = document.getElementById("log");
+            if (!logElement) {
+                console.error("Log element with ID 'log' not found.");
+                return;
+            }
+            logElement.textContent += message + "\n";
+            logElement.scrollTop = logElement.scrollHeight; // Auto-scroll to the bottom
+        }
 
-            /******* Add the create scene function ******/
+        // Encapsulate your code within an asynchronous IIFE
+        (async () => {
+            try {
+                var canvas = document.getElementById("renderCanvas"); // Get the canvas element
+                var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
-            var createScene = function () {
-                var scene = new BABYLON.Scene(engine);
-                scene.clearColor = new BABYLON.Color3(.5, .5, .5);
+                /******* Add the create scene function ******/
 
-                // Camera
-                var camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 30, BABYLON.Vector3.Zero(), scene);
-                camera.attachControl(canvas, true);
+                var createScene = function () {
+                    var scene = new BABYLON.Scene(engine);
+                    scene.clearColor = new BABYLON.Color3(.5, .5, .5);
 
-                // Lighting
-                var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-                light.intensity = 0.7;
+                    // Camera
+                    var camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 30, BABYLON.Vector3.Zero(), scene);
+                    camera.attachControl(canvas, true);
 
-                var pl = new BABYLON.PointLight("pl", BABYLON.Vector3.Zero(), scene);
-                pl.diffuse = new BABYLON.Color3(1, 1, 1);
-                pl.specular = new BABYLON.Color3(1, 1, 1);
-                pl.intensity = 0.8;
+                    // Lighting
+                    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+                    light.intensity = 0.7;
 
-                // Add and manipulate meshes in the scene
-                var sphere = BABYLON.Mesh.CreateTorusKnot("knot0", 20, 5, 128, 128, 2, 3, scene);
+                    var pl = new BABYLON.PointLight("pl", BABYLON.Vector3.Zero(), scene);
+                    pl.diffuse = new BABYLON.Color3(1, 1, 1);
+                    pl.specular = new BABYLON.Color3(1, 1, 1);
+                    pl.intensity = 0.8;
 
-                var alphamat = new BABYLON.StandardMaterial('alphamat', scene);
-                alphamat.diffuseColor = BABYLON.Color3.Blue();
-                alphamat.emissiveColor = new BABYLON.Color3(1.0, .1, .1);
-                alphamat.alpha = 0.1;
-                sphere.material = alphamat;
-                sphere.enableEdgesRendering();
-                sphere.edgesWidth = 5.0;
-                sphere.edgesColor = new BABYLON.Color4(1, 0, 0, 1);
+                    // Add and manipulate meshes in the scene
+                    // Replace Torus Knot with Sphere for testing
+                    var sphere = BABYLON.MeshBuilder.CreateSphere("knot0", {diameter: 10, segments: 64}, scene);
 
-                // Initialize the Emscripten Module
-                try {
-                    const Module = await createTetGenModule();
-                    console.log("Emscripten Module Loaded");
+                    var swire = sphere.clone("s-wire");
+                    swire.parent = sphere;
+					
+					var mattrans = new BABYLON.StandardMaterial("mattrans");
+					mattrans.diffuseColor = new BABYLON.Color3(0.1, 0.8, 0.02);
+					mattrans.alpha = 0.7;
+					sphere.material = mattrans;
 
-                    // Function to process the mesh
-                    async function processmesh(mesh) {
-                        // Extract positions and indices from the mesh
-                        var positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-                        var indices = mesh.getIndices();
+					var matwire = new BABYLON.StandardMaterial("matwire");
+					matwire.wireframe = true;
+					swire.material = matwire;
+					
+					sphere.forceSharedVertices();
 
-                        // Convert positions and indices to TypedArrays
-                        var bpositions = new Float64Array(positions);
-                        var bindices = new Uint32Array(indices);
-
-                        var bnumpositions = mesh.getTotalVertices();
-                        var bnumindices = indices.length;
-
-                        // Allocate memory in Emscripten heap for input data
-                        var bpositionsPtr = Module._malloc(bpositions.length * Float64Array.BYTES_PER_ELEMENT);
-                        Module.HEAPF64.set(bpositions, bpositionsPtr / Float64Array.BYTES_PER_ELEMENT);
-
-                        var bindicesPtr = Module._malloc(bindices.length * Uint32Array.BYTES_PER_ELEMENT);
-                        Module.HEAPU32.set(bindices, bindicesPtr / Uint32Array.BYTES_PER_ELEMENT);
-
-                        // Allocate memory for output data
-                        var maxVertices = bnumpositions * 3; // Adjust as needed
-                        var verticesOut = new Float64Array(maxVertices * 3);
-                        var verticesOutPtr = Module._malloc(verticesOut.length * Float64Array.BYTES_PER_ELEMENT);
-
-                        var maxTetrahedra = bnumpositions * 2; // Adjust as needed
-                        var tetrahedraOut = new Uint32Array(maxTetrahedra * 4);
-                        var tetrahedraOutPtr = Module._malloc(tetrahedraOut.length * Uint32Array.BYTES_PER_ELEMENT);
-
-                        // Allocate memory for output counts
-                        var numVerticesOutPtr = Module._malloc(4); // uint32_t
-                        var numTetrahedraOutPtr = Module._malloc(8); // uint64_t
-
-                        // Call the babylon2tetgen function
-                        Module.ccall(
-                            'babylon2tetgen',
-                            'number', // return type
-                            [
-                                'number', // bnumpositions
-                                'number', // bpositionsPtr
-                                'number', // bnumindices
-                                'number', // bindicesPtr
-                                'number', // numVerticesOutPtr
-                                'number', // verticesOutPtr
-                                'number', // numTetrahedraOutPtr
-                                'number'  // tetrahedraOutPtr
-                            ],
-                            [
-                                bnumpositions,
-                                bpositionsPtr,
-                                bnumindices,
-                                bindicesPtr,
-                                numVerticesOutPtr,
-                                verticesOutPtr,
-                                numTetrahedraOutPtr,
-                                tetrahedraOutPtr
-                            ]
-                        );
-
-                        // Retrieve output counts
-                        var numVerticesOut = Module.getValue(numVerticesOutPtr, 'i32');
-                        var numTetrahedraOutLow = Module.getValue(numTetrahedraOutPtr, 'i32'); // Lower 32 bits
-                        var numTetrahedraOutHigh = Module.getValue(numTetrahedraOutPtr + 4, 'i32'); // Higher 32 bits
-                        var numTetrahedraOut = numTetrahedraOutHigh * 4294967296 + numTetrahedraOutLow; // Combine into uint64
-
-                        console.log("Number of output vertices:", numVerticesOut);
-                        console.log("Number of output tetrahedra:", numTetrahedraOut);
-
-                        // Retrieve output data
-                        verticesOut.set(Module.HEAPF64.subarray(verticesOutPtr / Float64Array.BYTES_PER_ELEMENT, verticesOutPtr / Float64Array.BYTES_PER_ELEMENT + numVerticesOut * 3));
-                        tetrahedraOut.set(Module.HEAPU32.subarray(tetrahedraOutPtr / Uint32Array.BYTES_PER_ELEMENT, tetrahedraOutPtr / Uint32Array.BYTES_PER_ELEMENT + numTetrahedraOut * 4));
-
-                        // Free allocated memory
-                        Module._free(bpositionsPtr);
-                        Module._free(bindicesPtr);
-                        Module._free(verticesOutPtr);
-                        Module._free(tetrahedraOutPtr);
-                        Module._free(numVerticesOutPtr);
-                        Module._free(numTetrahedraOutPtr);
-
-                        // Return the result
-                        return {
-                            vertices: verticesOut.slice(0, numVerticesOut * 3),
-                            tetrahedra: tetrahedraOut.slice(0, numTetrahedraOut * 4)
-                        };
-                    }
-
-                    // Function to visualize the tetrahedral mesh
-                    function visualizeTetrahedralMesh(vertices, tetrahedra, scene) {
-                        // Create a new mesh for the tetrahedral elements
-                        var tetraMesh = new BABYLON.Mesh("tetraMesh", scene);
-                        var vertexData = new BABYLON.VertexData();
-
-                        vertexData.positions = vertices;
-                        // Optionally, compute normals or other vertex data
-
-                        // Build tetrahedral faces (each tetrahedron has 4 triangular faces)
-                        var indices = [];
-
-                        for (var i = 0; i < tetrahedra.length; i += 4) {
-                            var a = tetrahedra[i];
-                            var b = tetrahedra[i + 1];
-                            var c = tetrahedra[i + 2];
-                            var d = tetrahedra[i + 3];
-
-                            // Add faces of the tetrahedron
-                            // Face 1: a, b, c
-                            indices.push(a, b, c);
-                            // Face 2: a, b, d
-                            indices.push(a, b, d);
-                            // Face 3: a, c, d
-                            indices.push(a, c, d);
-                            // Face 4: b, c, d
-                            indices.push(b, c, d);
-                        }
-
-                        vertexData.indices = indices;
-
-                        // Apply vertex data to the tetrahedral mesh
-                        vertexData.applyToMesh(tetraMesh, true);
-
-                        // Set material to visualize
-                        var tetraMaterial = new BABYLON.StandardMaterial("tetraMaterial", scene);
-                        tetraMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0);
-                        tetraMaterial.alpha = 0.3;
-                        tetraMesh.material = tetraMaterial;
-
-                        // Enable back-face culling if needed
-                        tetraMesh.material.backFaceCulling = false;
-
-                        // Optional: Add wireframe
-                        tetraMesh.enableEdgesRendering();
-                        tetraMesh.edgesWidth = 1.0;
-                        tetraMesh.edgesColor = new BABYLON.Color4(0, 0, 0, 1);
-
-                        console.log("Tetrahedral mesh visualization added.");
-                    }
-
-                    // Process the sphere mesh
-                    processmesh(sphere).then(function(value) {
-                        console.log("Tetrahedral Mesh Generated:", value);
-                        // Visualize the tetrahedral mesh
-                        visualizeTetrahedralMesh(value.vertices, value.tetrahedra, scene);
-                    }).catch(function(error) {
-                        console.error("Failed to generate tetrahedral mesh:", error);
-                    });
+                    return scene;
                 };
+
+                /******* End of the create scene function ******/
 
                 var scene = createScene(); // Call the createScene function
 
@@ -258,11 +143,220 @@
                 window.addEventListener("resize", function () {
                     engine.resize();
                 });
-            }
 
-            // Initialize the scene
-            init();
-        </script>
+                // Initialize the Emscripten Module
+                appendLog("Initializing TetGen Module...");
+                const TetGenModule = await createTetGenModule(); // Ensure this is called after babylon2tet.js is loaded
+                appendLog("Emscripten Module Loaded");
+
+                // Override Emscripten's print and printErr to capture C++ printf outputs
+                TetGenModule.print = (text) => {
+                    appendLog(text);
+                };
+
+                TetGenModule.printErr = (text) => {
+                    appendLog("Error: " + text);
+                };
+
+                // Function to process the mesh
+                async function processmesh(mesh) {
+                    if (!mesh) {
+                        throw new Error("Mesh not found in the scene.");
+                    }
+
+                    // Extract positions and indices from the mesh
+                    var positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+                    var indices = mesh.getIndices();
+
+                    if (!positions || !indices) {
+                        throw new Error("Mesh does not contain positions or indices.");
+                    }
+
+                    appendLog("Mesh data extracted. Processing with TetGen...");
+
+                    // Convert positions and indices to TypedArrays
+                    var bpositions = new Float64Array(positions);
+                    var bindices = new Uint32Array(indices);
+
+                    var bnumpositions = mesh.getTotalVertices();
+                    var bnumindices = indices.length;
+
+                    appendLog(`Number of positions: ${bnumpositions}, Number of indices: ${bnumindices}`);
+
+                    // Allocate memory in Emscripten heap for input data
+                    var bpositionsPtr = TetGenModule._malloc(bpositions.length * Float64Array.BYTES_PER_ELEMENT);
+                    TetGenModule.HEAPF64.set(bpositions, bpositionsPtr / Float64Array.BYTES_PER_ELEMENT);
+                    appendLog(`Allocated memory for positions at address ${bpositionsPtr}`);
+
+                    var bindicesPtr = TetGenModule._malloc(bindices.length * Uint32Array.BYTES_PER_ELEMENT);
+                    TetGenModule.HEAPU32.set(bindices, bindicesPtr / Uint32Array.BYTES_PER_ELEMENT);
+                    appendLog(`Allocated memory for indices at address ${bindicesPtr}`);
+
+                    // Allocate memory for output data
+                    var maxVertices = bnumpositions * 3; // Adjust as needed
+                    var verticesOutPtr = TetGenModule._malloc(maxVertices * Float64Array.BYTES_PER_ELEMENT);
+                    appendLog(`Allocated memory for output vertices at address ${verticesOutPtr}`);
+
+                    var maxTetrahedra = bnumpositions * 2; // Adjust as needed
+                    var tetrahedraOutPtr = TetGenModule._malloc(maxTetrahedra * Uint32Array.BYTES_PER_ELEMENT);
+                    appendLog(`Allocated memory for output tetrahedra at address ${tetrahedraOutPtr}`);
+
+                    // Allocate memory for output counts
+                    var numVerticesOutPtr = TetGenModule._malloc(4); // uint32_t
+                    var numTetrahedraOutPtr = TetGenModule._malloc(8); // uint64_t
+                    appendLog(`Allocated memory for output counts at addresses ${numVerticesOutPtr} and ${numTetrahedraOutPtr}`);
+
+                    // Call the babylon2tetgen function
+                    appendLog("Calling babylon2tetgen function...");
+                    var returnValue = TetGenModule.ccall(
+                        'babylon2tetgen',
+                        'number', // return type
+                        [
+                            'number', // bnumpositions
+                            'number', // bpositionsPtr
+                            'number', // bnumindices
+                            'number', // bindicesPtr
+                            'number', // numVerticesOutPtr
+                            'number', // verticesOutPtr
+                            'number', // numTetrahedraOutPtr
+                            'number'  // tetrahedraOutPtr
+                        ],
+                        [
+                            bnumpositions,
+                            bpositionsPtr,
+                            bnumindices,
+                            bindicesPtr,
+                            numVerticesOutPtr,
+                            verticesOutPtr,
+                            numTetrahedraOutPtr,
+                            tetrahedraOutPtr
+                        ]
+                    );
+
+                    appendLog(`babylon2tetgen returned with value ${returnValue}`);
+
+                    // Check return value for success (assuming 0 is success)
+                    if (returnValue !== 0) {
+                        throw new Error("TetGen processing failed with error code: " + returnValue);
+                    }
+
+                    // Retrieve output counts
+                    var numVerticesOut = TetGenModule.getValue(numVerticesOutPtr, 'i32');
+                    appendLog(`Number of output vertices: ${numVerticesOut}`);
+
+                    // For uint64_t, split into low and high 32 bits
+                    var numTetrahedraOutLow = TetGenModule.getValue(numTetrahedraOutPtr, 'i32'); // Lower 32 bits
+                    var numTetrahedraOutHigh = TetGenModule.getValue(numTetrahedraOutPtr + 4, 'i32'); // Higher 32 bits
+                    var numTetrahedraOut = numTetrahedraOutHigh * 4294967296 + numTetrahedraOutLow; // Combine into uint64
+                    appendLog(`Number of output tetrahedra: ${numTetrahedraOut}`);
+
+                    // Validate output counts
+                    if (numVerticesOut <= 0 || numTetrahedraOut <= 0) {
+                        throw new Error("Invalid output counts received from TetGen.");
+                    }
+
+                    // Retrieve output data
+                    var verticesOut = new Float64Array(numVerticesOut * 3);
+                    verticesOut.set(TetGenModule.HEAPF64.subarray(
+                        verticesOutPtr / Float64Array.BYTES_PER_ELEMENT,
+                        verticesOutPtr / Float64Array.BYTES_PER_ELEMENT + numVerticesOut * 3
+                    ));
+                    appendLog("Retrieved output vertices from TetGen.");
+
+                    var tetrahedraOut = new Uint32Array(numTetrahedraOut * 4);
+                    tetrahedraOut.set(TetGenModule.HEAPU32.subarray(
+                        tetrahedraOutPtr / Uint32Array.BYTES_PER_ELEMENT,
+                        tetrahedraOutPtr / Uint32Array.BYTES_PER_ELEMENT + numTetrahedraOut * 4
+                    ));
+                    appendLog("Retrieved output tetrahedra from TetGen.");
+
+                    // Free allocated memory
+                    TetGenModule._free(bpositionsPtr);
+                    TetGenModule._free(bindicesPtr);
+                    TetGenModule._free(verticesOutPtr);
+                    TetGenModule._free(tetrahedraOutPtr);
+                    TetGenModule._free(numVerticesOutPtr);
+                    TetGenModule._free(numTetrahedraOutPtr);
+                    appendLog("Freed all allocated memory.");
+
+                    // Return the result
+                    return {
+                        vertices: verticesOut,
+                        tetrahedra: tetrahedraOut
+                    };
+                }
+
+                // Function to visualize the tetrahedral mesh
+                function visualizeTetrahedralMesh(vertices, tetrahedra, scene) {
+                    // Create a new mesh for the tetrahedral elements
+                    var tetraMesh = new BABYLON.Mesh("tetraMesh", scene);
+                    var vertexData = new BABYLON.VertexData();
+
+                    vertexData.positions = Array.from(vertices);
+                    // Optionally, compute normals or other vertex data
+
+                    // Build tetrahedral faces (each tetrahedron has 4 triangular faces)
+                    var indices = [];
+
+                    for (var i = 0; i < tetrahedra.length; i += 4) {
+                        var a = tetrahedra[i];
+                        var b = tetrahedra[i + 1];
+                        var c = tetrahedra[i + 2];
+                        var d = tetrahedra[i + 3];
+
+                        // Add faces of the tetrahedron
+                        // Face 1: a, b, c
+                        indices.push(a, b, c);
+                        // Face 2: a, b, d
+                        indices.push(a, b, d);
+                        // Face 3: a, c, d
+                        indices.push(a, c, d);
+                        // Face 4: b, c, d
+                        indices.push(b, c, d);
+                    }
+
+                    vertexData.indices = indices;
+
+                    // Apply vertex data to the tetrahedral mesh
+                    vertexData.applyToMesh(tetraMesh, true);
+                    appendLog("Applied vertex data to tetrahedral mesh.");
+
+                    // Set material to visualize
+                    var tetraMaterial = new BABYLON.StandardMaterial("tetraMaterial", scene);
+                    tetraMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0);
+                    tetraMaterial.alpha = 0.3;
+                    tetraMesh.material = tetraMaterial;
+                    appendLog("Set material for tetrahedral mesh.");
+
+                    // Enable back-face culling if needed
+                    tetraMesh.material.backFaceCulling = false;
+
+                    // Optional: Add wireframe
+                    tetraMesh.enableEdgesRendering();
+                    tetraMesh.edgesWidth = 1.0;
+                    tetraMesh.edgesColor = new BABYLON.Color4(0, 0, 0, 1);
+                    appendLog("Enabled edges rendering for tetrahedral mesh.");
+                }
+
+                // Process the sphere mesh
+                var retrievedMesh = scene.getMeshByName("knot0");
+                appendLog(`Mesh 'knot0' retrieved: ${retrievedMesh !== null}`);
+                var meshResult = await processmesh(retrievedMesh);
+                appendLog("Tetrahedral Mesh Generated: " + JSON.stringify({
+                    vertices: meshResult.vertices,
+                    tetrahedra: meshResult.tetrahedra
+                }));
+                // Visualize the tetrahedral mesh
+                visualizeTetrahedralMesh(meshResult.vertices, meshResult.tetrahedra, scene);
+
+                appendLog("----- All Processes Completed Successfully -----");
+            } catch (error) {
+                console.error("An error occurred during initialization:", error);
+                appendLog("Error: " + error.message);
+            }
+        })();
+    </script>
+
 </body>
 
 </html>

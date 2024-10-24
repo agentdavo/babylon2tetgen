@@ -1,7 +1,3 @@
-# Usage:
-# make babylon2tet       # compile emscripten wasm files
-# make clean             # clean build artifacts
-
 # Compiler and Archiver
 CC=emcc
 AR=emar
@@ -11,7 +7,7 @@ CXX=em++
 DEBUG_LEVEL = -g2
 CXX_STANDARD = -std=c++11
 EXTRA_CCFLAGS = 
-CXXFLAGS = -O2 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS) -MMD -MP
+CXXFLAGS = -O3 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS) -MMD -MP
 PREDCXXFLAGS = -O0 $(DEBUG_LEVEL) $(CXX_STANDARD) $(EXTRA_CCFLAGS) -MMD -MP
 
 # Directories
@@ -39,7 +35,9 @@ EMSCRIPTEN_FLAGS = \
     -s SAFE_HEAP=0 \
     -s ALIASING_FUNCTION_POINTERS=0 \
     -s DISABLE_EXCEPTION_CATCHING=2 \
-    -s MAXIMUM_MEMORY=2147483648 # 2GB in bytes
+    -s MAXIMUM_MEMORY=2147483648 \
+    -s MODULARIZE=1 \
+    -s EXPORT_NAME="createTetGenModule"
 
 # Phony Targets
 .PHONY: all babylon2tet clean
@@ -57,7 +55,7 @@ $(BUILD)/%.o: $(TETGEN)/%.cxx | $(BUILD)
 
 # Link the final JavaScript module
 babylon2tet: $(TETGEN_OBJECTS) $(MAIN_SRC)
-	$(CXX) $(CXXFLAGS) -I $(TETGEN) $(TETGEN_OBJECTS) $(MAIN_SRC) -o $(TARGET) $(EMSCRIPTEN_FLAGS)
+	$(CXX) $(CXXFLAGS) -I $(TETGEN) $(TETGEN_OBJECTS) $(MAIN_SRC) -o babylon2tet.js $(EMSCRIPTEN_FLAGS)
 
 # Clean build artifacts
 clean:
